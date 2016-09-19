@@ -2,27 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da8945fd-e2af-4997-a500-c06744e8ed43" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/crits/core/static/js/misc.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/crits/core/templates/misc_widget.html" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_query.html" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_service_campaign_tab.html" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_service_ip_tab.html" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_service_nav_items.html" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../crits_services/data_ingester_service/views.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/campaigns/handlers.py" afterPath="$PROJECT_DIR$/crits/campaigns/handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/campaigns/templates/campaigns_display_row_widget.html" afterPath="$PROJECT_DIR$/crits/campaigns/templates/campaigns_display_row_widget.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/core/handlers.py" afterPath="$PROJECT_DIR$/crits/core/handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/core/urls.py" afterPath="$PROJECT_DIR$/crits/core/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/core/views.py" afterPath="$PROJECT_DIR$/crits/core/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/ips/api.py" afterPath="$PROJECT_DIR$/crits/ips/api.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/ips/forms.py" afterPath="$PROJECT_DIR$/crits/ips/forms.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/ips/handlers.py" afterPath="$PROJECT_DIR$/crits/ips/handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/ips/ip.py" afterPath="$PROJECT_DIR$/crits/ips/ip.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/ips/templates/ip_detail.html" afterPath="$PROJECT_DIR$/crits/ips/templates/ip_detail.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/ips/views.py" afterPath="$PROJECT_DIR$/crits/ips/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/services/handlers.py" afterPath="$PROJECT_DIR$/crits/services/handlers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/services/views.py" afterPath="$PROJECT_DIR$/crits/services/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crits/settings.py" afterPath="$PROJECT_DIR$/crits/settings.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../crits_services/data_ingester_service/urls.py" afterPath="$PROJECT_DIR$/../crits_services/data_ingester_service/urls.py" />
     </list>
     <ignored path="crits.iws" />
@@ -47,31 +33,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="data_ingester_service_template.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_service_template.html">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/crits/services/views.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="17" column="26" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
-              <folding />
+              <caret line="47" column="41" selection-start-line="47" selection-start-column="41" selection-end-line="47" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="handlers.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="handlers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/crits/ips/handlers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="476" column="0" selection-start-line="476" selection-start-column="0" selection-end-line="476" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.local/lib/python2.7/site-packages/ipwhois/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="268">
+              <caret line="554" column="9" selection-start-line="554" selection-start-column="4" selection-end-line="554" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -80,21 +58,11 @@
       <file leaf-file-name="handlers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/crits/core/handlers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2879">
-              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+            <state relative-caret-position="538">
+              <caret line="881" column="12" selection-start-line="881" selection-start-column="12" selection-end-line="881" selection-end-column="12" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="user.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/crits/core/user.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="481">
-              <caret line="48" column="27" selection-start-line="48" selection-start-column="24" selection-end-line="48" selection-end-column="32" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -117,8 +85,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/../crits_services/zanes_service/get_item.py" />
-        <option value="$PROJECT_DIR$/crits/core/templatetags/filters.py" />
         <option value="$PROJECT_DIR$/../crits_services/zanes_service/templates/zanes_service_template.html" />
         <option value="$PROJECT_DIR$/../crits_services/zanes_service/forms.py" />
         <option value="$PROJECT_DIR$/crits/campaigns/templates/campaigns_display_row_widget.html" />
@@ -164,10 +130,12 @@
         <option value="$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_service_template.html" />
         <option value="$USER_HOME$/crits_services/data_ingester_service/__init__.py" />
         <option value="$PROJECT_DIR$/../crits_services/data_ingester_service/forms.py" />
-        <option value="$PROJECT_DIR$/crits/services/views.py" />
         <option value="$PROJECT_DIR$/../crits_services/data_ingester_service/urls.py" />
         <option value="$PROJECT_DIR$/../crits_services/data_ingester_service/__init__.py" />
         <option value="$PROJECT_DIR$/crits/ips/handlers.py" />
+        <option value="$PROJECT_DIR$/crits/core/views.py" />
+        <option value="$PROJECT_DIR$/crits/services/views.py" />
+        <option value="$PROJECT_DIR$/crits/core/handlers.py" />
       </list>
     </option>
   </component>
@@ -236,20 +204,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="peinfo_service" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="crits" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="crits_services" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="data_ingester_service" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -292,7 +246,43 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="services" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="crits" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="crits" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="crits" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="ips" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="crits" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="crits" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="crits" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="core" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -623,34 +613,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../crits_services/taxii_service/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="164" column="30" selection-start-line="164" selection-start-column="30" selection-end-line="164" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../crits_services/cuckoo_service/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="86" column="20" selection-start-line="86" selection-start-column="20" selection-end-line="86" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../crits_services/taxii_service/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="502">
-          <caret line="270" column="45" selection-start-line="270" selection-start-column="45" selection-end-line="270" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../crits_services/metacap_service/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="41" selection-start-line="13" selection-start-column="41" selection-end-line="13" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../crits_services/metacap_service/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-697">
@@ -784,23 +746,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/crits/services/handlers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="724" column="18" selection-start-line="724" selection-start-column="4" selection-end-line="724" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/crits/services/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#11#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="501">
@@ -840,14 +785,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="548">
           <caret line="194" column="25" selection-start-line="194" selection-start-column="25" selection-end-line="194" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/crits/ips/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -915,24 +852,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/crits/core/user.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="481">
-          <caret line="48" column="27" selection-start-line="48" selection-start-column="24" selection-end-line="48" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/crits/core/handlers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2879">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../crits_services/peinfo_service/bootstrap">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -945,22 +864,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.local/lib/python2.7/site-packages/ipwhois/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_service_template.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="26" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
           <folding />
         </state>
       </provider>
@@ -997,11 +900,105 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/.local/lib/python2.7/site-packages/ipwhois/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/core/user.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="481">
+          <caret line="48" column="27" selection-start-line="48" selection-start-column="24" selection-end-line="48" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/documentation/help_main.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="2037" column="1" selection-start-line="2037" selection-start-column="1" selection-end-line="2037" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/ips/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1919">
+          <caret line="209" column="8" selection-start-line="209" selection-start-column="4" selection-end-line="209" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/core/api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-886">
+          <caret line="575" column="21" selection-start-line="575" selection-start-column="21" selection-end-line="575" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../crits_services/data_ingester_service/templates/data_ingester_service_template.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="26" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/services/handlers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10740">
+          <caret line="724" column="18" selection-start-line="724" selection-start-column="4" selection-end-line="724" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/core/templates/sources_row_widget.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="148" selection-start-line="24" selection-start-column="148" selection-end-line="24" selection-end-column="148" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/core/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="746" column="53" selection-start-line="746" selection-start-column="53" selection-end-line="746" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/core/handlers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="538">
+          <caret line="881" column="12" selection-start-line="881" selection-start-column="12" selection-end-line="881" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/crits/ips/handlers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="476" column="0" selection-start-line="476" selection-start-column="0" selection-end-line="476" selection-end-column="0" />
+        <state relative-caret-position="268">
+          <caret line="554" column="9" selection-start-line="554" selection-start-column="4" selection-end-line="554" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crits/services/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="47" column="41" selection-start-line="47" selection-start-column="41" selection-end-line="47" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

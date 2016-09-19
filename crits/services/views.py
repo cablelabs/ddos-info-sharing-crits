@@ -46,14 +46,6 @@ def list(request):
     """
 
     all_services = CRITsService.objects()
-    #service_remove("anb", "admin3")
-    #service_remove("dummy", "admin3")
-    #service_remove("MetaCap", "admin3")
-    #service_remove("office_meta", "admin3")
-    #service_remove("opendns_investigate", "admin3")
-    #service_remove("taxii_service", "admin3")
-    #service_remove("Zanes_Service", "admin3")
-    service_remove("zanes_service", "admin3")
     if all_services:
         all_services = sorted(all_services, key=lambda item: item.name.lower())
 
