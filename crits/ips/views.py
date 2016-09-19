@@ -135,11 +135,26 @@ def add_update_ip(request, method):
             if cleaned_data.get('add_indicator'):
                 add_indicator = True
             indicator_reference = cleaned_data.get('indicator_reference')
+            misc = cleaned_data.get('misc')
             bucket_list = cleaned_data.get(form_consts.Common.BUCKET_LIST_VARIABLE_NAME)
             ticket = cleaned_data.get(form_consts.Common.TICKET_VARIABLE_NAME)
             related_id = cleaned_data['related_id']
             related_type = cleaned_data['related_type']
             relationship_type = cleaned_data['relationship_type']
+
+            # New fields
+            alert_type = cleaned_data['alert_type']
+            asn = cleaned_data['asn']
+            city = cleaned_data['city']
+            country = cleaned_data['country']
+            first_seen = cleaned_data['first_seen']
+            last_seen = cleaned_data['last_seen']
+            number_of_times = cleaned_data['number_of_times']
+            state = cleaned_data['state']
+            total_bps = cleaned_data['total_bps']
+            total_pps = cleaned_data['total_pps']
+            attack_type = cleaned_data['attack_type']
+            vendor = cleaned_data['vendor']
 
             result = ip_add_update(ip,
                                    ip_type,
@@ -153,9 +168,22 @@ def add_update_ip(request, method):
                                    ticket=ticket,
                                    is_add_indicator=add_indicator,
                                    indicator_reference=indicator_reference,
+                                   misc=misc,
                                    related_id=related_id,
                                    related_type=related_type,
-                                   relationship_type=relationship_type)
+                                   relationship_type=relationship_type,
+                                   alert_type=alert_type,
+                                   asn=asn,
+                                   city=city,
+                                   country=country,
+                                   first_seen=first_seen,
+                                   last_seen=last_seen,
+                                   number_of_times=number_of_times,
+                                   state=state,
+                                   total_bps=total_bps,
+                                   total_pps=total_pps,
+                                   attack_type=attack_type,
+                                   vendor=vendor)
             if 'message' in result:
                 if not isinstance(result['message'], list):
                     result['message'] = [result['message']]

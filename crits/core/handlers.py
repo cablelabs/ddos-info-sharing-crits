@@ -269,6 +269,44 @@ def data_update(type_, id_, data, analyst):
     except ValidationError, e:
         return {'success': False, 'message': e}
 
+def misc_update(type_, id_, misc, user, **kwargs):
+    """
+    Change the misc of a top-level object.
+
+    :param type_: The CRITs type of the top-level object.
+    :type type_: str
+    :param id_: The ObjectId to search for.
+    :type id_: str
+    :param misc: The misc to use.
+    :type misc: str
+    :param user: The user setting the misc.
+    :type user: str
+    :returns: dict with keys "success" (boolean) and "message" (str)
+    """
+
+    klass = class_from_type(type_)
+    if not klass:
+        return {'success': False, 'message': 'Could not find object.'}
+
+    if hasattr(klass, 'source'):
+        sources = user_sources(user)
+        obj = klass.objects(id=id_, source__name__in=sources).first()
+    else:
+        obj = klass.objects(id=id_).first()
+    if not obj:
+        return {'success': False, 'message': 'Could not find object.'}
+
+    # Have to unescape the submitted data. Use unescape() to escape
+    # &lt; and friends. Use urllib2.unquote() to escape %3C and friends.
+    h = HTMLParser.HTMLParser()
+    misc = h.unescape(misc)
+    try:
+        obj.misc = misc
+        obj.save(username=user)
+        return {'success': True, 'message': "Misc set."}
+    except ValidationError, e:
+        return {'success': False, 'message': e}
+
 def get_favorites(analyst):
     """
     Get all favorites for a user.

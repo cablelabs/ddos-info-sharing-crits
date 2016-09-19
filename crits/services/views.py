@@ -16,7 +16,7 @@ from crits.services.handlers import do_edit_config, generate_analysis_results_cs
 from crits.services.handlers import generate_analysis_results_jtable
 from crits.services.handlers import get_service_config, set_enabled, set_triage
 from crits.services.handlers import run_service, get_supported_services
-from crits.services.handlers import delete_analysis
+from crits.services.handlers import delete_analysis, service_remove
 from crits.services.service import CRITsService
 import crits.services
 
@@ -46,7 +46,14 @@ def list(request):
     """
 
     all_services = CRITsService.objects()
-
+    #service_remove("anb", "admin3")
+    #service_remove("dummy", "admin3")
+    #service_remove("MetaCap", "admin3")
+    #service_remove("office_meta", "admin3")
+    #service_remove("opendns_investigate", "admin3")
+    #service_remove("taxii_service", "admin3")
+    #service_remove("Zanes_Service", "admin3")
+    service_remove("zanes_service", "admin3")
     if all_services:
         all_services = sorted(all_services, key=lambda item: item.name.lower())
 

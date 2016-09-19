@@ -57,8 +57,23 @@ class IPResource(CRITsAPIResource):
         ip_type = data.get('ip_type', None)
         add_indicator = data.get('add_indicator', False)
         indicator_reference = data.get('indicator_reference', None)
+        misc = data.get('misc', None)
         bucket_list = data.get('bucket_list', None)
         ticket = data.get('ticket', None)
+
+        # New fields
+        alert_type = data.get('AlertType', None)
+        asn = data.get('ASN', None)
+        city = data.get('City', None)
+        country = data.get('Country', None)
+        first_seen = data.get('FirstSeen', None)
+        last_seen = data.get('LastSeen', None)
+        number_of_times = data.get('NumberOfTimes', None)
+        state = data.get('State', None)
+        total_bps = data.get('TotalBPS', None)
+        total_pps = data.get('TotalPPS', None)
+        attack_type = data.get('Type', None)
+        vendor = data.get('Vendor', None)
 
         content = {'return_code': 1,
                    'type': 'IP'}
@@ -78,7 +93,20 @@ class IPResource(CRITsAPIResource):
                                bucket_list=bucket_list,
                                ticket=ticket,
                                is_add_indicator=add_indicator,
-                               indicator_reference=indicator_reference)
+                               indicator_reference=indicator_reference,
+                               misc=misc,
+                               alert_type=alert_type,
+                               asn=asn,
+                               city=city,
+                               country=country,
+                               first_seen=first_seen,
+                               last_seen=last_seen,
+                               number_of_times=number_of_times,
+                               state=state,
+                               total_bps=total_bps,
+                               total_pps=total_pps,
+                               attack_type=attack_type,
+                               vendor=vendor)
 
         if result.get('message'):
             content['message'] = result.get('message')

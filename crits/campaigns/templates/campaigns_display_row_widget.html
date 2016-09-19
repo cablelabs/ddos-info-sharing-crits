@@ -9,7 +9,7 @@
     {% with hit=obj|default:hit %}
     <td>
         {% if admin %}
-        <a href="#" title="Delete Campaign" class="ui-icon ui-icon-close deleteClick" 
+        <a href="#" title="Delete Campaign" class="ui-icon ui-icon-close deleteClick"
 	   type="campaign" value="{{campaign.date}}" 
 	   data-del-type="Campaign Association" 
 	   data-del-key="{{ hit.name }}"

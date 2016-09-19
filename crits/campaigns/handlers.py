@@ -14,7 +14,7 @@ from crits.campaigns.campaign import Campaign, EmbeddedTTP
 from crits.campaigns.forms import TTPForm
 from crits.core.class_mapper import class_from_id, class_from_type
 from crits.core.crits_mongoengine import EmbeddedCampaign, json_handler
-from crits.core.handlers import jtable_ajax_list, build_jtable
+from crits.core.handlers import jtable_ajax_list, build_jtable, jtable_ajax_delete
 from crits.core.handlers import csv_export, get_item_names
 from crits.core.mongo_tools import mongo_connector
 from crits.core.user_tools import user_sources, is_user_subscribed
@@ -205,8 +205,8 @@ def generate_campaign_jtable(request, option):
     # Disable campaign removal
     if option == "jtdelete":
         response = {"Result": "ERROR"}
-        #if jtable_ajax_delete(obj_type,request):
-        #    response = {"Result": "OK"}
+        if jtable_ajax_delete(obj_type,request):
+            response = {"Result": "OK"}
         return HttpResponse(json.dumps(response,
                                        default=json_handler),
                             content_type="application/json")
@@ -215,6 +215,8 @@ def generate_campaign_jtable(request, option):
         'default_sort': mapper['default_sort'],
         'listurl': reverse('crits.%ss.views.%ss_listing' % (type_, type_),
                            args=('jtlist',)),
+        'deleteurl': reverse('crits.%ss.views.%ss_listing' % (type_, type_),
+                             args=('jtdelete',)),
         'searchurl': reverse(mapper['searchurl']),
         'fields': mapper['jtopts_fields'],
         'hidden_fields': mapper['hidden_fields'],

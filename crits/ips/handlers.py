@@ -271,26 +271,55 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
     bucket_list = data.get(form_consts.Common.BUCKET_LIST_VARIABLE_NAME)
     ticket = data.get(form_consts.Common.TICKET_VARIABLE_NAME)
     indicator_reference = data.get('indicator_reference')
+    misc = data.get('misc')
     related_id = data.get('related_id')
     related_type = data.get('related_type')
     relationship_type = data.get('relationship_type')
 
-    retVal = ip_add_update(ip, ip_type,
-            source=source,
-            source_method=source_method,
-            source_reference=source_reference,
-            campaign=campaign,
-            confidence=confidence,
-            analyst=analyst,
-            is_add_indicator=is_add_indicator,
-            indicator_reference=indicator_reference,
-            bucket_list=bucket_list,
-            ticket=ticket,
-            is_validate_only=is_validate_only,
-            cache=cache,
-            related_id=related_id,
-            related_type=related_type,
-            relationship_type=relationship_type)
+    # New fields
+    alert_type = data.get('alert_type')
+    asn = data.get('asn')
+    city = data.get('city')
+    country = data.get('country')
+    first_seen = data.get('first_seen')
+    last_seen = data.get('last_seen')
+    number_of_times = data.get('number_of_times')
+    state = data.get('state')
+    total_bps = data.get('total_bps')
+    total_pps = data.get('total_pps')
+    attack_type = data.get('attack_type')
+    vendor = data.get('vendor')
+
+    retVal = ip_add_update(ip,
+                           ip_type,
+                           source=source,
+                           source_method=source_method,
+                           source_reference=source_reference,
+                           campaign=campaign,
+                           confidence=confidence,
+                           analyst=analyst,
+                           is_add_indicator=is_add_indicator,
+                           indicator_reference=indicator_reference,
+                           misc=misc,
+                           bucket_list=bucket_list,
+                           ticket=ticket,
+                           is_validate_only=is_validate_only,
+                           cache=cache,
+                           related_id=related_id,
+                           related_type=related_type,
+                           relationship_type=relationship_type,
+                           alert_type=alert_type,
+                           asn=asn,
+                           city=city,
+                           country=country,
+                           first_seen=first_seen,
+                           last_seen=last_seen,
+                           number_of_times=number_of_times,
+                           state=state,
+                           total_bps=total_bps,
+                           total_pps=total_pps,
+                           attack_type=attack_type,
+                           vendor=vendor)
 
     if not retVal['success']:
         errors.append(retVal.get('message'))
@@ -337,8 +366,12 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
 def ip_add_update(ip_address, ip_type, source=None, source_method='',
                   source_reference='', campaign=None, confidence='low',
                   analyst=None, is_add_indicator=False, indicator_reference='',
+                  misc='',
                   bucket_list=None, ticket=None, is_validate_only=False, cache={}, 
-                  related_id=None, related_type=None, relationship_type=None):
+                  related_id=None, related_type=None, relationship_type=None,
+                  alert_type='', asn='', city='', country='', first_seen='',
+                  last_seen='', number_of_times=None, state='', total_bps=None,
+                  total_pps=None, attack_type='', vendor=''):
     """
     Add/update an IP address.
 
@@ -435,6 +468,23 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
 
     if ticket:
         ip_object.add_ticket(ticket, analyst)
+
+    if misc:
+        ip_object.edit_misc(misc)
+
+    # New fields
+    ip_object.alert_type = alert_type
+    ip_object.asn = asn
+    ip_object.city = city
+    ip_object.country = country
+    ip_object.first_seen = first_seen
+    ip_object.last_seen = last_seen
+    ip_object.number_of_times = number_of_times
+    ip_object.state = state
+    ip_object.total_bps = total_bps
+    ip_object.total_pps = total_pps
+    ip_object.attack_type = attack_type
+    ip_object.vendor = vendor
 
     related_obj = None
     if related_id:
@@ -550,6 +600,7 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
     source_reference = rowData.get(form_consts.IP.SOURCE_REFERENCE, "")
     is_add_indicator = convert_string_to_bool(rowData.get(form_consts.IP.ADD_INDICATOR, "False"))
     indicator_reference = rowData.get(form_consts.IP.INDICATOR_REFERENCE, "")
+    misc = rowData.get('Misc', "")
     bucket_list = rowData.get(form_consts.Common.BUCKET_LIST, "")
     ticket = rowData.get(form_consts.Common.TICKET, "")
 
@@ -564,6 +615,7 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
         'source_reference': source_reference,
         'add_indicator': is_add_indicator,
         'indicator_reference': indicator_reference,
+        'misc': misc,
         'bucket_list': bucket_list,
         'ticket': ticket}
 

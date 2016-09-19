@@ -1,0 +1,10 @@
+<script>
+    var misc_update = "{% url 'crits.core.views.update_object_misc' %}";
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/misc.js"></script>
+
+<td class="key">Misc</td>
+<td class="longtext">
+    <span class="edit_underline" id="object_misc">{{misc}}</span><span id="object_misc_error"></span>
+</td>

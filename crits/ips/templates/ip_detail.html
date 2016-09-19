@@ -54,6 +54,11 @@
                             <span class="edit" id="object_status" action="{% url 'crits.core.views.update_status' subscription.type subscription.id %}">{{ip.status}}</span>
                         </td>
                     </tr>
+                    <tr>
+                        {% with misc=ip.misc %}
+                            {% include 'misc_widget.html' %}
+                        {% endwith %}
+                    </tr>
                     {% with sectors=ip.sectors %}
                         {% include "sector_widget.html" %}
                     {% endwith %}
@@ -66,6 +71,54 @@
                         {% with releasability=ip.releasability %}
                             {% include "releasability_list_widget.html" %}
                         {% endwith %}
+                    </tr>
+                    <tr>
+                        <td class="key">Alert Type</td>
+                        <td>{{ip.alert_type}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">ASN</td>
+                        <td>{{ip.asn}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">City</td>
+                        <td>{{ip.city}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">Country</td>
+                        <td>{{ip.country}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">First Seen</td>
+                        <td>{{ip.first_seen}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">Last Seen</td>
+                        <td>{{ip.last_seen}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">Number of Times</td>
+                        <td>{{ip.number_of_times}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">State</td>
+                        <td>{{ip.state}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">Total BPS</td>
+                        <td>{{ip.total_bps}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">Total PPS</td>
+                        <td>{{ip.total_pps}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">Attack Type</td>
+                        <td>{{ip.attack_type}}</td>
+                    </tr>
+                    <tr>
+                        <td class="key">Vendor</td>
+                        <td>{{ip.vendor}}</td>
                     </tr>
                 </tbody>
             </table>
