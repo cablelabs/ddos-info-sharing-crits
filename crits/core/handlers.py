@@ -648,28 +648,41 @@ def does_source_exist(source, active=False):
     else:
         return False
 
-def add_new_source(source, analyst):
+def add_new_source(source, asns, analyst):
     """
     Add a new source to CRITs.
 
     :param source: The name of the new source.
     :type source: str
+    :param asns: A comma separated list of sources.
+    :type asns: str
     :param analyst: The user adding the new source.
     :type analyst: str
-    :returns: True, False
+    :returns: dict with keys:
+              "success" (boolean),
+              "message" (str) 'error', 'add', or 'update'
     """
+
+    retVal = {}
+    retVal['success'] = True
+    retVal['message'] = 'update'
 
     try:
         source = source.strip()
         src = SourceAccess.objects(name=source).first()
-        if src:
-            return False
-        src = SourceAccess()
+        if not src:
+            src = SourceAccess()
+            retVal['message'] = 'add'
         src.name = source
+        asn_list = asns.split(',')
+        src.asns = map(lambda x: int(x), asn_list)
+        #src.asns = asns.split(',')
         src.save(username=analyst)
-        return True
+        return retVal
     except ValidationError:
-        return False
+        retVal['success'] = False
+        retVal['message'] = 'error'
+        return retVal
 
 def merge_source_lists(left, right):
     """
@@ -2685,7 +2698,7 @@ def generate_items_jtable(request, itype, option):
         fields = ['name', 'id']
         click = "function () {window.parent.$('#signature_dependency_add').click();}"
     elif itype == 'SourceAccess':
-        fields = ['name', 'active', 'id']
+        fields = ['name', 'active', 'asns', 'id']
         click = "function () {window.parent.$('#source_create').click();}"
     elif itype == 'UserRole':
         fields = ['name', 'active', 'id']
@@ -2734,9 +2747,14 @@ def generate_items_jtable(request, itype, option):
             }
             """ % itype
         if field['fieldname'].startswith("'name"):
-            field['display'] = """ function (data) { return '<a href="#" onclick=\\'javascript:editAction("'+data.record.name+'", "'+data.record.object_types+'", "'+data.record.preferred+'");\\'>' + data.record.name + '</a>';
-            }
-            """
+            if itype == 'SourceAccess':
+                field['display'] = """ function (data) { return '<a href="#" onclick=\\'javascript:editSource("'+data.record.name+'", '+data.record.asns+');\\'>' + data.record.name + '</a>';
+                }
+                """
+            else:
+                field['display'] = """ function (data) { return '<a href="#" onclick=\\'javascript:editAction("'+data.record.name+'", "'+data.record.object_types+'", "'+data.record.preferred+'");\\'>' + data.record.name + '</a>';
+                }
+                """
 
     '''special case for signature dependency, add a delete button to allow for removal'''
     if itype == 'SignatureDependency':

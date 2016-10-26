@@ -659,10 +659,14 @@ def source_add(request):
         analyst = request.user.username
         if source_form.is_valid():
             result = add_new_source(source_form.cleaned_data['source'],
+                                    source_form.cleaned_data['asns'],
                                     analyst)
-            if result:
-                msg = ('<div>Source added successfully! Add this source to '
-                       'users to utilize it.</div>')
+            if result['success']:
+                if result['message'] == 'add':
+                    msg = ('<div>Source added successfully! Add this source to '
+                           'users to utilize it.</div>')
+                else: # update
+                    msg = ('<div>Source updated successfully!</div>')
                 message = {'message': msg,
                            'success': True}
             else:
@@ -1124,7 +1128,8 @@ def base_context(request):
         base_context['relationship_form'] = ForgeRelationshipForm()
         base_context['add_signature_type'] = NewSignatureTypeForm()
         base_context['add_signature_dependency'] = NewSignatureDependencyForm()
-        base_context['source_access'] = SourceAccessForm()
+        base_context['source_access'] = SourceAccessForm()  # for modifying a user's settings
+        base_context['add_source_access'] = AddSourceForm() # for adding or updating a source
         base_context['upload_tlds'] = TLDUpdateForm()
         base_context['user_role_add'] = AddUserRoleForm()
         base_context['new_ticket'] = TicketForm(initial={'date': datetime.datetime.now()})

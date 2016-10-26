@@ -250,6 +250,15 @@ function editAction(action, object_types, preferred) {
     $("#add-new-action-form").dialog("open");
 }
 
+function editSource(source, asn_list) {
+    var src = $("#add-new-source-form input[name='source']");
+    var asns = $("#add-new-source-form input[name='asns']");
+    src.val(source);
+    src.change();
+    asns.val(asn_list);
+    $("#add-new-source-form").dialog("open");
+}
+
 function deleteSignatureDependency(coll, oid)
 {
    //get the attribute of the row tr element, if success, this will be removed
@@ -1191,6 +1200,48 @@ $(document).ready(function() {
         },
     });
 
+    $("#form-add-new-source").off().submit(function(e) {
+        e.preventDefault();
+        var result = $(this).serialize();
+        $.ajax({
+            type: "POST",
+            url: source_add,
+            data: result,
+            datatype: 'json',
+            success: function(data) {
+                $("#form-add-new-source-results").show().css('display', 'table');
+                $("#form-add-new-source-results").html(data.message);
+                if (data.form) {
+                   $('#form-add-new-source').children('table').contents().replaceWith($(data.form));
+                }
+            },
+            error: function(data)  {
+                $("#form-add-new-source-results").html("dsflkjadflkdfsa;");
+            }
+        });
+    });
+    $( "#add-new-source-form" ).dialog({
+        autoOpen: false,
+        modal: true,
+        width: "auto",
+        height: "auto",
+        buttons: {
+            "Add/Edit Source": function(e) {
+                $("#form-add-new-source").submit();
+            },
+            "Cancel": function() {
+                $(":input", "#form-add-new-source").each(function() {
+                    $(this).val('');
+                });
+                $( this ).dialog( "close" );
+            },
+        },
+        close: function() {
+                        $(":input", "#form-add-new-source").each(function() {
+                                $(this).val('');
+                        });
+        },
+    });
 
 
     $(".source_subscription").click(function(e) {

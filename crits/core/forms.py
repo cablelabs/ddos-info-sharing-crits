@@ -129,6 +129,29 @@ class AddSourceForm(forms.Form):
     error_css_class = 'error'
     required_css_class = 'required'
     source = forms.CharField(widget=forms.TextInput, required=True)
+    asns = forms.CharField(required=False,
+                           label="ASNs",
+                           widget=forms.TextInput,
+                           help_text="Use comma separated values.")
+
+    def clean(self):
+        cleaned_data = super(AddSourceForm, self).clean()
+        asns = cleaned_data.get('asns')
+        if asns == '':
+            self._errors.setdefault('asns', ErrorList())
+            self._errors['asns'].append(u'Please include at least one integer value.')
+            return cleaned_data
+
+        asn_list = asns.split(',')
+        #asn_list = filter(lambda x: x != '', asn_list)
+        for asn in asn_list:
+            try:
+                int(asn)
+            except ValueError:
+                self._errors.setdefault('asns', ErrorList())
+                self._errors['asns'].append(u'ASNs must be integers.')
+
+        return cleaned_data
 
 class AddReleasabilityForm(forms.Form):
     """

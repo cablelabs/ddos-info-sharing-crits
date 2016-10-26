@@ -1,4 +1,4 @@
-from mongoengine import Document, IntField, StringField
+from mongoengine import Document, IntField, ListField, StringField
 from django.conf import settings
 
 from crits.core.crits_mongoengine import CritsDocument, CritsSchemaDocument
@@ -16,7 +16,8 @@ class SourceAccess(CritsDocument, CritsSchemaDocument, Document):
         "schema_doc": {
             'name': 'Name of the source',
             'active': 'Enabled in the UI (on/off)',
-            'sample_count': 'Number of samples with this source.'
+            'sample_count': 'Number of samples with this source.',
+            'ASNs': 'ASNs corresponding to the source.'
         }
     }
 
@@ -24,3 +25,4 @@ class SourceAccess(CritsDocument, CritsSchemaDocument, Document):
     #TODO: this could be a boolean field if we migrate
     active = StringField(default="on")
     sample_count = IntField(default=0)
+    asns = ListField(IntField(default=None))
