@@ -255,6 +255,8 @@ function editSource(source, asn_list) {
     var asns = $("#add-new-source-form input[name='asns']");
     src.val(source);
     src.change();
+    console.log(source);
+    console.log(asn_list);
     asns.val(asn_list);
     $("#add-new-source-form").dialog("open");
 }
@@ -1209,14 +1211,17 @@ $(document).ready(function() {
             data: result,
             datatype: 'json',
             success: function(data) {
+                console.log(data);
                 $("#form-add-new-source-results").show().css('display', 'table');
                 $("#form-add-new-source-results").html(data.message);
                 if (data.form) {
-                   $('#form-add-new-source').children('table').contents().replaceWith($(data.form));
+                    console.log(data.form);
+                    //var array = $('#form-add-new-source').children('table').contents();
+                    //for (i = 0; i < array.length; i++) {
+                    //    console.log(array[i]);
+                    //}
+                    $('#form-add-new-source').children('table').replaceWith($(data.form));
                 }
-            },
-            error: function(data)  {
-                $("#form-add-new-source-results").html("dsflkjadflkdfsa;");
             }
         });
     });
@@ -1232,6 +1237,7 @@ $(document).ready(function() {
             "Cancel": function() {
                 $(":input", "#form-add-new-source").each(function() {
                     $(this).val('');
+                    $("#form-add-new-source-results").html('');
                 });
                 $( this ).dialog( "close" );
             },
@@ -1239,6 +1245,7 @@ $(document).ready(function() {
         close: function() {
                         $(":input", "#form-add-new-source").each(function() {
                                 $(this).val('');
+                                $("#form-add-new-source-results").html('');
                         });
         },
     });

@@ -674,9 +674,11 @@ def add_new_source(source, asns, analyst):
             src = SourceAccess()
             retVal['message'] = 'add'
         src.name = source
-        asn_list = asns.split(',')
-        src.asns = map(lambda x: int(x), asn_list)
-        #src.asns = asns.split(',')
+        if asns:
+            asn_list = asns.split(',')
+            src.asns = map(lambda x: int(x), asn_list)
+        else:
+            src.asns = []
         src.save(username=analyst)
         return retVal
     except ValidationError:
@@ -2748,7 +2750,11 @@ def generate_items_jtable(request, itype, option):
             """ % itype
         if field['fieldname'].startswith("'name"):
             if itype == 'SourceAccess':
-                field['display'] = """ function (data) { return '<a href="#" onclick=\\'javascript:editSource("'+data.record.name+'", '+data.record.asns+');\\'>' + data.record.name + '</a>';
+                field['display'] = """ function (data) {
+                if (data.record.asns) {
+                return '<a href="#" onclick=\\'javascript:editSource("'+data.record.name+'", '+data.record.asns+');\\'>' + data.record.name + '</a>';
+                }
+                return '<a href="#" onclick=\\'javascript:editSource("'+data.record.name+'", []);\\'>' + data.record.name + '</a>';
                 }
                 """
             else:

@@ -134,22 +134,32 @@ class AddSourceForm(forms.Form):
                            widget=forms.TextInput,
                            help_text="Use comma separated values.")
 
+    def __init__(self, *args, **kwargs):
+        super(AddSourceForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super(AddSourceForm, self).clean()
         asns = cleaned_data.get('asns')
         if asns == '':
-            self._errors.setdefault('asns', ErrorList())
-            self._errors['asns'].append(u'Please include at least one integer value.')
+            #self._errors.setdefault('asns', ErrorList())
+            #self._errors['asns'].append(u'Please include at least one integer value.')
             return cleaned_data
 
-        asn_list = asns.split(',')
+        input_asn_list = asns.split(',')
         #asn_list = filter(lambda x: x != '', asn_list)
-        for asn in asn_list:
+        used_asn_list = []
+        for asn in input_asn_list:
             try:
-                int(asn)
+                asn_int = int(asn)
+                if asn_int in used_asn_list:
+                    self._errors.setdefault('asns', ErrorList())
+                    self._errors['asns'].append(u'Cannot repeat same ASN multiple times.')
+                    break
+                used_asn_list.append(asn_int)
             except ValueError:
                 self._errors.setdefault('asns', ErrorList())
                 self._errors['asns'].append(u'ASNs must be integers.')
+                break
 
         return cleaned_data
 
