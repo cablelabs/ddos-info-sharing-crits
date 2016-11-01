@@ -670,12 +670,17 @@ def source_add(request):
                 message = {'message': msg,
                            'success': True}
             else:
-                message = {'message': '<div>Source addition failed!</div>', 'success':
-                           False}
+                message = {'message': '<div>Source addition failed!</div>',
+                           'success': False}
 
         else:
-            message = {'success': False,
-                       'form': source_form.as_table()}
+            error_dict = source_form.errors
+            msg = 'Invalid Form: '
+            for field, error_list in error_dict.items():
+                msg += error_list
+            message = {'message': msg,
+                       'success': False}
+                       #'form': source_form.as_table()}
         return HttpResponse(json.dumps(message),
                             content_type="application/json")
     return render_to_response("error.html",

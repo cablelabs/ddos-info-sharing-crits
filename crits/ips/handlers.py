@@ -461,8 +461,9 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
     if source:
         for s in source:
             ip_object.add_source(s)
-            # also add ASN by making an AS Number object
-            ip_object.add_object(ObjectTypes.AS_NUMBER, asn, s.name, '', '', analyst)
+            if asn and asn != '':
+                # also add ASN by making an AS Number object
+                ip_object.add_object(ObjectTypes.AS_NUMBER, asn, s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 

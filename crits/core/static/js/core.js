@@ -255,8 +255,6 @@ function editSource(source, asn_list) {
     var asns = $("#add-new-source-form input[name='asns']");
     src.val(source);
     src.change();
-    console.log(source);
-    console.log(asn_list);
     asns.val(asn_list);
     $("#add-new-source-form").dialog("open");
 }
@@ -1215,11 +1213,6 @@ $(document).ready(function() {
                 $("#form-add-new-source-results").show().css('display', 'table');
                 $("#form-add-new-source-results").html(data.message);
                 if (data.form) {
-                    console.log(data.form);
-                    //var array = $('#form-add-new-source').children('table').contents();
-                    //for (i = 0; i < array.length; i++) {
-                    //    console.log(array[i]);
-                    //}
                     $('#form-add-new-source').children('table').replaceWith($(data.form));
                 }
             }

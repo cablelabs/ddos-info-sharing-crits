@@ -7,6 +7,7 @@ from django.forms.widgets import HiddenInput, RadioSelect, SelectMultiple
 from crits.core import form_consts
 from crits.core.form_consts import Action as ActionConsts
 from crits.core.handlers import get_source_names, get_item_names, ui_themes
+from crits.core.source_access import SourceAccess
 from crits.core.user_role import UserRole
 from crits.core.user_tools import get_user_organization
 from crits.core.widgets import CalWidget
@@ -140,17 +141,18 @@ class AddSourceForm(forms.Form):
     def clean(self):
         cleaned_data = super(AddSourceForm, self).clean()
         asns = cleaned_data.get('asns')
-        if asns == '':
-            #self._errors.setdefault('asns', ErrorList())
-            #self._errors['asns'].append(u'Please include at least one integer value.')
-            return cleaned_data
-
         input_asn_list = asns.split(',')
         #asn_list = filter(lambda x: x != '', asn_list)
+        other_source_asns = self._other_source_asns()
         used_asn_list = []
         for asn in input_asn_list:
             try:
                 asn_int = int(asn)
+                if asn_int in other_source_asns:
+                    self._errors.setdefault('asns', ErrorList())
+                    self._errors['asns'].append(u'ASNs cannot include ASNs from other sources.')
+                    break
+
                 if asn_int in used_asn_list:
                     self._errors.setdefault('asns', ErrorList())
                     self._errors['asns'].append(u'Cannot repeat same ASN multiple times.')
@@ -162,6 +164,14 @@ class AddSourceForm(forms.Form):
                 break
 
         return cleaned_data
+
+    def _other_source_asns(self):
+        source = self.data['source']
+        other_sources = SourceAccess.objects().filter(name__ne=source)
+        other_asns = []
+        for src in other_sources:
+            other_asns.extend(src.asns)
+        return other_asns
 
 class AddReleasabilityForm(forms.Form):
     """
