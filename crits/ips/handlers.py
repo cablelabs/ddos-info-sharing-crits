@@ -31,6 +31,7 @@ from crits.vocabulary.indicators import (
 )
 from crits.vocabulary.objects import ObjectTypes
 from crits.vocabulary.relationships import RelationshipTypes
+from crits.vocabulary.status import Status
 
 
 def generate_ip_csv(request):
@@ -459,10 +460,21 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
             ip_object.add_campaign(camp)
 
     if source:
+        # NOTE: There should only be one source.
         for s in source:
             ip_object.add_source(s)
-            if asn and asn != '':
-                # also add ASN by making an AS Number object
+            if ip_object.status != Status.ANALYZED and asn and asn != '':
+                # Remove old AS Number object(s)
+
+                # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove.
+                asn_values = []
+                for o in ip_object.obj:
+                    if o.object_type == ObjectTypes.AS_NUMBER:
+                        asn_values.append(o.value)
+                for asn_value in asn_values:
+                    ip_object.remove_object(ObjectTypes.AS_NUMBER, asn_value)
+
+                # Add new AS Number object
                 ip_object.add_object(ObjectTypes.AS_NUMBER, asn, s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
@@ -478,7 +490,8 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
 
     # New fields
     ip_object.alert_type = alert_type
-    ip_object.asn = asn
+    if ip_object.status != Status.ANALYZED:
+        ip_object.asn = asn
     ip_object.city = city
     ip_object.country = country
     ip_object.first_seen = first_seen

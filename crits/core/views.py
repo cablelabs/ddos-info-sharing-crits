@@ -677,7 +677,8 @@ def source_add(request):
             error_dict = source_form.errors
             msg = 'Invalid Form: '
             for field, error_list in error_dict.items():
-                msg += error_list
+                for error in error_list:
+                    msg += error
             message = {'message': msg,
                        'success': False}
                        #'form': source_form.as_table()}

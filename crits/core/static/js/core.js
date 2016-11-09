@@ -1212,9 +1212,9 @@ $(document).ready(function() {
                 console.log(data);
                 $("#form-add-new-source-results").show().css('display', 'table');
                 $("#form-add-new-source-results").html(data.message);
-                if (data.form) {
-                    $('#form-add-new-source').children('table').replaceWith($(data.form));
-                }
+                //if (data.form) {
+                //    $('#form-add-new-source').children('table').replaceWith($(data.form));
+                //}
             }
         });
     });

@@ -142,26 +142,26 @@ class AddSourceForm(forms.Form):
         cleaned_data = super(AddSourceForm, self).clean()
         asns = cleaned_data.get('asns')
         input_asn_list = asns.split(',')
-        #asn_list = filter(lambda x: x != '', asn_list)
+        input_asn_list = filter(lambda x: x != '', input_asn_list)
         other_source_asns = self._other_source_asns()
         used_asn_list = []
         for asn in input_asn_list:
-            try:
-                asn_int = int(asn)
-                if asn_int in other_source_asns:
-                    self._errors.setdefault('asns', ErrorList())
-                    self._errors['asns'].append(u'ASNs cannot include ASNs from other sources.')
-                    break
-
-                if asn_int in used_asn_list:
-                    self._errors.setdefault('asns', ErrorList())
-                    self._errors['asns'].append(u'Cannot repeat same ASN multiple times.')
-                    break
-                used_asn_list.append(asn_int)
-            except ValueError:
+            if not isinstance(asn, int):
                 self._errors.setdefault('asns', ErrorList())
                 self._errors['asns'].append(u'ASNs must be integers.')
                 break
+            asn_int = int(asn)
+            if asn_int in other_source_asns:
+                self._errors.setdefault('asns', ErrorList())
+                self._errors['asns'].append(u'ASNs cannot include ASNs from other sources.')
+                break
+
+            if asn_int in used_asn_list:
+                self._errors.setdefault('asns', ErrorList())
+                self._errors['asns'].append(u'Cannot repeat same ASN multiple times.')
+                break
+            used_asn_list.append(asn_int)
+
 
         return cleaned_data
 
