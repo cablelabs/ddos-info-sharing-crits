@@ -48,32 +48,6 @@ class IP(CritsBaseAttributes, CritsActionsDocument, CritsSourceDocument, Documen
 
     ip = StringField(required=True)
     ip_type = StringField(default=IPTypes.IPV4_ADDRESS, db_field="type")
-    misc = StringField(default='')
-
-    # New fields
-    alert_type = StringField(default='')
-    asn = StringField(default='')
-    city = StringField(default='')
-    country = StringField(default='')
-    first_seen = StringField(default='')
-    last_seen = StringField(default='')
-    number_of_times = IntField()
-    state = StringField(default='')
-    total_bps = IntField()
-    total_pps = IntField()
-    attack_type = StringField(default='')
-    vendor = StringField(default='')
 
     def migrate(self):
         migrate_ip(self)
-
-    def edit_misc(self, misc):
-        """
-        Change the IP misc field.
-
-        :param misc: The new misc string.
-        :type misc: str
-
-        """
-
-        self.misc = misc

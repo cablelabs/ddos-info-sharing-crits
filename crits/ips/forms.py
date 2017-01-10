@@ -8,6 +8,7 @@ from crits.core.user_tools import get_user_organization
 from crits.core import form_consts
 
 from crits.vocabulary.ips import IPTypes
+from crits.vocabulary.objects import ObjectTypes
 from crits.vocabulary.relationships import RelationshipTypes
 
 relationship_choices = [(c, c) for c in RelationshipTypes.values(sort=True)]
@@ -32,7 +33,6 @@ class AddIPForm(forms.Form):
     source_reference = forms.CharField(widget=forms.TextInput(attrs={'size':'90'}), required=False, label=form_consts.IP.SOURCE_REFERENCE)
     add_indicator = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'bulkskip'}), required=False, label=form_consts.IP.ADD_INDICATOR)
     indicator_reference = forms.CharField(widget=forms.TextInput(attrs={'size':'90', 'class':'bulkskip'}), required=False, label=form_consts.IP.INDICATOR_REFERENCE)
-    misc = forms.CharField(widget=forms.TextInput(attrs={'size':'90', 'class':'bulkskip'}), required=False, label="Misc")
     related_id = forms.CharField(widget=forms.HiddenInput(), required=False, label=form_consts.Common.RELATED_ID)
     related_type = forms.CharField(widget=forms.HiddenInput(), required=False, label=form_consts.Common.RELATED_TYPE)
     relationship_type = forms.ChoiceField(required=False,
@@ -40,18 +40,17 @@ class AddIPForm(forms.Form):
                                           widget=forms.Select(attrs={'id':'relationship_type'}))
 
     # New fields
-    alert_type = forms.CharField(required=False)
-    asn = forms.CharField(required=False)
-    city = forms.CharField(required=False)
-    country = forms.CharField(required=False)
-    first_seen = forms.CharField(required=False)
-    last_seen = forms.CharField(required=False)
-    number_of_times = forms.IntegerField(required=False)
-    state = forms.CharField(required=False)
-    total_bps = forms.IntegerField(required=False)
-    total_pps = forms.IntegerField(required=False)
-    attack_type = forms.CharField(required=False)
-    vendor = forms.CharField(required=False)
+    alert_type = forms.CharField(required=False, label=ObjectTypes.ALERT_TYPE)
+    as_number = forms.CharField(required=False, label=ObjectTypes.AS_NUMBER)
+    attack_type = forms.CharField(required=False, label=ObjectTypes.ATTACK_TYPE)
+    city = forms.CharField(required=False, label=ObjectTypes.CITY)
+    country = forms.CharField(required=False, label=ObjectTypes.COUNTRY)
+    first_seen = forms.CharField(required=False, label=ObjectTypes.TIME_FIRST_SEEN)
+    last_seen = forms.CharField(required=False, label=ObjectTypes.TIME_LAST_SEEN)
+    number_of_times = forms.IntegerField(required=False, label=ObjectTypes.NUMBER_OF_TIMES_SEEN)
+    state = forms.CharField(required=False, label=ObjectTypes.STATE)
+    total_bps = forms.IntegerField(required=False, label=ObjectTypes.TOTAL_BYTES_PER_SECOND)
+    total_pps = forms.IntegerField(required=False, label=ObjectTypes.TOTAL_PACKETS_PER_SECOND)
 
     def __init__(self, username, choices, *args, **kwargs):
         super(AddIPForm, self).__init__(*args, **kwargs)

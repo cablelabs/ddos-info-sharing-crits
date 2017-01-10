@@ -273,14 +273,14 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
     bucket_list = data.get(form_consts.Common.BUCKET_LIST_VARIABLE_NAME)
     ticket = data.get(form_consts.Common.TICKET_VARIABLE_NAME)
     indicator_reference = data.get('indicator_reference')
-    misc = data.get('misc')
     related_id = data.get('related_id')
     related_type = data.get('related_type')
     relationship_type = data.get('relationship_type')
 
     # New fields
     alert_type = data.get('alert_type')
-    asn = data.get('asn')
+    as_number = data.get('as_number')
+    attack_type = data.get('attack_type')
     city = data.get('city')
     country = data.get('country')
     first_seen = data.get('first_seen')
@@ -289,8 +289,6 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
     state = data.get('state')
     total_bps = data.get('total_bps')
     total_pps = data.get('total_pps')
-    attack_type = data.get('attack_type')
-    vendor = data.get('vendor')
 
     retVal = ip_add_update(ip,
                            ip_type,
@@ -302,7 +300,6 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
                            analyst=analyst,
                            is_add_indicator=is_add_indicator,
                            indicator_reference=indicator_reference,
-                           misc=misc,
                            bucket_list=bucket_list,
                            ticket=ticket,
                            is_validate_only=is_validate_only,
@@ -311,7 +308,8 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
                            related_type=related_type,
                            relationship_type=relationship_type,
                            alert_type=alert_type,
-                           asn=asn,
+                           as_number=as_number,
+                           attack_type=attack_type,
                            city=city,
                            country=country,
                            first_seen=first_seen,
@@ -319,9 +317,7 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
                            number_of_times=number_of_times,
                            state=state,
                            total_bps=total_bps,
-                           total_pps=total_pps,
-                           attack_type=attack_type,
-                           vendor=vendor)
+                           total_pps=total_pps)
 
     if not retVal['success']:
         errors.append(retVal.get('message'))
@@ -368,12 +364,11 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
 def ip_add_update(ip_address, ip_type, source=None, source_method='',
                   source_reference='', campaign=None, confidence='low',
                   analyst=None, is_add_indicator=False, indicator_reference='',
-                  misc='',
-                  bucket_list=None, ticket=None, is_validate_only=False, cache={}, 
+                  bucket_list=None, ticket=None, is_validate_only=False, cache={},
                   related_id=None, related_type=None, relationship_type=None,
-                  alert_type='', asn='', city='', country='', first_seen='',
-                  last_seen='', number_of_times=None, state='', total_bps=None,
-                  total_pps=None, attack_type='', vendor=''):
+                  alert_type='', as_number='', attack_type='', city='', country='',
+                  first_seen='', last_seen='', number_of_times=None, state='',
+                  total_bps=None, total_pps=None):
     """
     Add/update an IP address.
 
@@ -463,7 +458,7 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
         # NOTE: There should only be one source.
         for s in source:
             ip_object.add_source(s)
-            if ip_object.status != Status.ANALYZED and asn and asn != '':
+            if ip_object.status != Status.ANALYZED and as_number:
                 # Remove old AS Number object(s)
 
                 # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove.
@@ -475,7 +470,28 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                     ip_object.remove_object(ObjectTypes.AS_NUMBER, asn_value)
 
                 # Add new AS Number object
-                ip_object.add_object(ObjectTypes.AS_NUMBER, asn, s.name, '', '', analyst)
+                ip_object.add_object(ObjectTypes.AS_NUMBER, as_number, s.name, '', '', analyst)
+            # New fields
+            if alert_type:
+                ip_object.add_object(ObjectTypes.ALERT_TYPE, alert_type, s.name, '', '', analyst)
+            if attack_type:
+                ip_object.add_object(ObjectTypes.ATTACK_TYPE, attack_type, s.name, '', '', analyst)
+            if city:
+                ip_object.add_object(ObjectTypes.CITY, city, s.name, '', '', analyst)
+            if country:
+                ip_object.add_object(ObjectTypes.COUNTRY, country, s.name, '', '', analyst)
+            if number_of_times:
+                ip_object.add_object(ObjectTypes.NUMBER_OF_TIMES_SEEN, str(number_of_times), s.name, '', '', analyst)
+            if state:
+                ip_object.add_object(ObjectTypes.STATE, state, s.name, '', '', analyst)
+            if first_seen:
+                ip_object.add_object(ObjectTypes.TIME_FIRST_SEEN, first_seen, s.name, '', '', analyst)
+            if last_seen:
+                ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, last_seen, s.name, '', '', analyst)
+            if total_bps:
+                ip_object.add_object(ObjectTypes.TOTAL_BYTES_PER_SECOND, str(total_bps), s.name, '', '', analyst)
+            if total_pps:
+                ip_object.add_object(ObjectTypes.TOTAL_PACKETS_PER_SECOND, str(total_pps), s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 
@@ -484,24 +500,6 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
 
     if ticket:
         ip_object.add_ticket(ticket, analyst)
-
-    if misc:
-        ip_object.edit_misc(misc)
-
-    # New fields
-    ip_object.alert_type = alert_type
-    if ip_object.status != Status.ANALYZED:
-        ip_object.asn = asn
-    ip_object.city = city
-    ip_object.country = country
-    ip_object.first_seen = first_seen
-    ip_object.last_seen = last_seen
-    ip_object.number_of_times = number_of_times
-    ip_object.state = state
-    ip_object.total_bps = total_bps
-    ip_object.total_pps = total_pps
-    ip_object.attack_type = attack_type
-    ip_object.vendor = vendor
 
     related_obj = None
     if related_id:
@@ -617,9 +615,21 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
     source_reference = rowData.get(form_consts.IP.SOURCE_REFERENCE, "")
     is_add_indicator = convert_string_to_bool(rowData.get(form_consts.IP.ADD_INDICATOR, "False"))
     indicator_reference = rowData.get(form_consts.IP.INDICATOR_REFERENCE, "")
-    misc = rowData.get('Misc', "")
     bucket_list = rowData.get(form_consts.Common.BUCKET_LIST, "")
     ticket = rowData.get(form_consts.Common.TICKET, "")
+
+    # New fields
+    alert_type = rowData.get(ObjectTypes.ALERT_TYPE, "")
+    as_number = rowData.get(ObjectTypes.AS_NUMBER)
+    attack_type = rowData.get(ObjectTypes.ATTACK_TYPE)
+    city = rowData.get(ObjectTypes.CITY)
+    country = rowData.get(ObjectTypes.COUNTRY)
+    first_seen = rowData.get(ObjectTypes.TIME_FIRST_SEEN)
+    last_seen = rowData.get(ObjectTypes.TIME_LAST_SEEN)
+    number_of_times = rowData.get(ObjectTypes.NUMBER_OF_TIMES_SEEN)
+    state = rowData.get(ObjectTypes.STATE)
+    total_bps = rowData.get(ObjectTypes.TOTAL_BYTES_PER_SECOND)
+    total_pps = rowData.get(ObjectTypes.TOTAL_PACKETS_PER_SECOND)
 
     data = {
         'ip': ip,
@@ -632,9 +642,20 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
         'source_reference': source_reference,
         'add_indicator': is_add_indicator,
         'indicator_reference': indicator_reference,
-        'misc': misc,
         'bucket_list': bucket_list,
-        'ticket': ticket}
+        'ticket': ticket,
+        'alert_type': alert_type,
+        'as_number': as_number,
+        'attack_type': attack_type,
+        'city': city,
+        'country': country,
+        'first_seen': first_seen,
+        'last_seen': last_seen,
+        'number_of_times': number_of_times,
+        'state': state,
+        'total_bps': total_bps,
+        'total_pps': total_pps
+    }
 
     bound_form = cache.get('ip_form')
 
