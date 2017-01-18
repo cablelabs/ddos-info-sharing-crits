@@ -366,9 +366,9 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                   analyst=None, is_add_indicator=False, indicator_reference='',
                   bucket_list=None, ticket=None, is_validate_only=False, cache={},
                   related_id=None, related_type=None, relationship_type=None,
-                  alert_type='', as_number='', attack_type='', city='', country='',
+                  extra='', as_number='', attack_type='', city='', country='',
                   first_seen='', last_seen='', number_of_times=None, state='',
-                  total_bps=None, total_pps=None):
+                  total_bps=None, total_pps=None, source_port=None, dest_port=None):
     """
     Add/update an IP address.
 
@@ -472,8 +472,8 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                 # Add new AS Number object
                 ip_object.add_object(ObjectTypes.AS_NUMBER, as_number, s.name, '', '', analyst)
             # New fields
-            if alert_type:
-                ip_object.add_object(ObjectTypes.ALERT_TYPE, alert_type, s.name, '', '', analyst)
+            if extra:
+                ip_object.add_object(ObjectTypes.EXTRA, extra, s.name, '', '', analyst)
             if attack_type:
                 ip_object.add_object(ObjectTypes.ATTACK_TYPE, attack_type, s.name, '', '', analyst)
             if city:
@@ -492,6 +492,10 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                 ip_object.add_object(ObjectTypes.TOTAL_BYTES_PER_SECOND, str(total_bps), s.name, '', '', analyst)
             if total_pps:
                 ip_object.add_object(ObjectTypes.TOTAL_PACKETS_PER_SECOND, str(total_pps), s.name, '', '', analyst)
+            if source_port:
+                ip_object.add_object(ObjectTypes.SOURCE_PORT, str(source_port), s.name, '', '', analyst)
+            if dest_port:
+                ip_object.add_object(ObjectTypes.DEST_PORT, str(dest_port), s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 

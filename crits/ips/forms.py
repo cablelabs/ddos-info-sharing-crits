@@ -40,7 +40,7 @@ class AddIPForm(forms.Form):
                                           widget=forms.Select(attrs={'id':'relationship_type'}))
 
     # New fields
-    alert_type = forms.CharField(required=False, label=ObjectTypes.ALERT_TYPE)
+    extra = forms.CharField(required=False, label=ObjectTypes.EXTRA)
     as_number = forms.CharField(required=False, label=ObjectTypes.AS_NUMBER)
     attack_type = forms.CharField(required=False, label=ObjectTypes.ATTACK_TYPE)
     city = forms.CharField(required=False, label=ObjectTypes.CITY)

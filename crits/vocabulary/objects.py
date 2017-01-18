@@ -7,7 +7,6 @@ class ObjectTypes(vocab):
 
 
     ADJUST_TOKEN = "Adjust Token"
-    ALERT_TYPE = "Alert Type"
     API_KEY = "API Key"
     AS_NUMBER = "AS Number"
     AS_NAME = "AS Name"
@@ -44,6 +43,7 @@ class ObjectTypes(vocab):
     EMAIL_X_MAILER = "Email X-Mailer"
     EMAIL_X_ORIGINATING_IP = "Email X-Originating IP"
     ENCRYPTION_KEY = "Encryption Key"
+    EXTRA = "Extra"
     FILE_CREATED = "File Created"
     FILE_DELETED = "File Deleted"
     FILE_MOVED = "File Moved"

@@ -61,7 +61,7 @@ class IPResource(CRITsAPIResource):
         ticket = data.get('ticket', None)
 
         # New fields
-        alert_type = data.get('alert_type', None)
+        extra = data.get('extra', None)
         as_number = data.get('as_number', None)
         attack_type = data.get('attack_type', None)
         city = data.get('city', None)
@@ -92,7 +92,7 @@ class IPResource(CRITsAPIResource):
                                ticket=ticket,
                                is_add_indicator=add_indicator,
                                indicator_reference=indicator_reference,
-                               alert_type=alert_type,
+                               extra=extra,
                                as_number=as_number,
                                attack_type=attack_type,
                                city=city,
