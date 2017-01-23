@@ -278,7 +278,7 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
     relationship_type = data.get('relationship_type')
 
     # New fields
-    alert_type = data.get('alert_type')
+    extra = data.get('extra')
     as_number = data.get('as_number')
     attack_type = data.get('attack_type')
     city = data.get('city')
@@ -307,7 +307,7 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
                            related_id=related_id,
                            related_type=related_type,
                            relationship_type=relationship_type,
-                           alert_type=alert_type,
+                           extra=extra,
                            as_number=as_number,
                            attack_type=attack_type,
                            city=city,
@@ -623,7 +623,7 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
     ticket = rowData.get(form_consts.Common.TICKET, "")
 
     # New fields
-    alert_type = rowData.get(ObjectTypes.ALERT_TYPE, "")
+    extra = rowData.get(ObjectTypes.EXTRA, "")
     as_number = rowData.get(ObjectTypes.AS_NUMBER)
     attack_type = rowData.get(ObjectTypes.ATTACK_TYPE)
     city = rowData.get(ObjectTypes.CITY)
@@ -648,7 +648,7 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
         'indicator_reference': indicator_reference,
         'bucket_list': bucket_list,
         'ticket': ticket,
-        'alert_type': alert_type,
+        'extra': extra,
         'as_number': as_number,
         'attack_type': attack_type,
         'city': city,

@@ -142,7 +142,7 @@ def add_update_ip(request, method):
             relationship_type = cleaned_data['relationship_type']
 
             # New fields
-            alert_type = cleaned_data['alert_type']
+            extra = cleaned_data['extra']
             as_number = cleaned_data['as_number']
             attack_type = cleaned_data['attack_type']
             city = cleaned_data['city']
@@ -169,7 +169,7 @@ def add_update_ip(request, method):
                                    related_id=related_id,
                                    related_type=related_type,
                                    relationship_type=relationship_type,
-                                   alert_type=alert_type,
+                                   extra=extra,
                                    as_number=as_number,
                                    attack_type=attack_type,
                                    city=city,
