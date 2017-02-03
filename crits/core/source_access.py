@@ -26,3 +26,5 @@ class SourceAccess(CritsDocument, CritsSchemaDocument, Document):
     active = StringField(default="on")
     sample_count = IntField(default=0)
     asns = ListField(IntField(default=None))
+    country_code = StringField(default="")
+    aliases = ListField(StringField(default=""))
