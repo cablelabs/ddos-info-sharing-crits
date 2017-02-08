@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -458,20 +459,34 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
         # NOTE: There should only be one source.
         for s in source:
             ip_object.add_source(s)
+            # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove.
+            asn_values = []
+            for o in ip_object.obj:
+                if o.object_type == ObjectTypes.AS_NUMBER:
+                    asn_values.append(o.value)
+                elif not is_item_new:
+                    # TODO: make sure modifying o.value actually works
+                    if o.object_type == ObjectTypes.NUMBER_OF_TIMES_SEEN:
+                        # Increment number of times seen
+                        try:
+                            int_value = int(o.value)
+                            int_value += 1
+                            o.value = str(int_value)
+                        except (TypeError, ValueError):
+                            pass
+                    elif o.object_type == ObjectTypes.TIME_LAST_SEEN:
+                        # Update last time seen to current time
+                        time_now = str(datetime.now())
+                        o.value = time_now
             if ip_object.status != Status.ANALYZED and as_number:
                 # Remove old AS Number object(s)
-
-                # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove.
-                asn_values = []
-                for o in ip_object.obj:
-                    if o.object_type == ObjectTypes.AS_NUMBER:
-                        asn_values.append(o.value)
                 for asn_value in asn_values:
                     ip_object.remove_object(ObjectTypes.AS_NUMBER, asn_value)
 
                 # Add new AS Number object
                 ip_object.add_object(ObjectTypes.AS_NUMBER, as_number, s.name, '', '', analyst)
-            # New fields
+
+            # Other new fields
             if extra:
                 ip_object.add_object(ObjectTypes.EXTRA, extra, s.name, '', '', analyst)
             if attack_type:
@@ -480,14 +495,8 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                 ip_object.add_object(ObjectTypes.CITY, city, s.name, '', '', analyst)
             if country:
                 ip_object.add_object(ObjectTypes.COUNTRY, country, s.name, '', '', analyst)
-            if number_of_times:
-                ip_object.add_object(ObjectTypes.NUMBER_OF_TIMES_SEEN, str(number_of_times), s.name, '', '', analyst)
             if state:
                 ip_object.add_object(ObjectTypes.STATE, state, s.name, '', '', analyst)
-            if first_seen:
-                ip_object.add_object(ObjectTypes.TIME_FIRST_SEEN, first_seen, s.name, '', '', analyst)
-            if last_seen:
-                ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, last_seen, s.name, '', '', analyst)
             if total_bps:
                 ip_object.add_object(ObjectTypes.TOTAL_BYTES_PER_SECOND, str(total_bps), s.name, '', '', analyst)
             if total_pps:
@@ -496,6 +505,12 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                 ip_object.add_object(ObjectTypes.SOURCE_PORT, str(source_port), s.name, '', '', analyst)
             if dest_port:
                 ip_object.add_object(ObjectTypes.DEST_PORT, str(dest_port), s.name, '', '', analyst)
+            if (is_item_new):
+                # Initialize number of times seen, first time seen, and last time seen
+                ip_object.add_object(ObjectTypes.NUMBER_OF_TIMES_SEEN, '1', s.name, '', '', analyst)
+                time_now = str(datetime.now())
+                ip_object.add_object(ObjectTypes.TIME_FIRST_SEEN, time_now, s.name, '', '', analyst)
+                ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, time_now, s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 

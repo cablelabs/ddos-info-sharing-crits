@@ -27,4 +27,5 @@ class SourceAccess(CritsDocument, CritsSchemaDocument, Document):
     sample_count = IntField(default=0)
     asns = ListField(IntField(default=None))
     country_code = StringField(default="")
+    # TODO: Maybe change data structure for 'aliases' to reduce time to check if value is already present.
     aliases = ListField(StringField(default=""))
