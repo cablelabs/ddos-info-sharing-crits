@@ -461,32 +461,47 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
             ip_object.add_source(s)
             # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove.
             asn_values = []
+            is_number_of_times_seen_already_present = False
+            is_time_first_seen_already_present = False
+            is_time_last_seen_already_present = False
+            time_now = ''
             for o in ip_object.obj:
                 if o.object_type == ObjectTypes.AS_NUMBER:
                     asn_values.append(o.value)
-                elif not is_item_new:
-                    # TODO: make sure modifying o.value actually works
-                    if o.object_type == ObjectTypes.NUMBER_OF_TIMES_SEEN:
-                        # Increment number of times seen
-                        try:
-                            int_value = int(o.value)
-                            int_value += 1
-                            o.value = str(int_value)
-                        except (TypeError, ValueError):
-                            pass
-                    elif o.object_type == ObjectTypes.TIME_LAST_SEEN:
-                        # Update last time seen to current time
-                        time_now = str(datetime.now())
-                        o.value = time_now
+                elif o.object_type == ObjectTypes.NUMBER_OF_TIMES_SEEN:
+                    # Increment number of times seen
+                    try:
+                        int_value = int(o.value)
+                        int_value += 1
+                        o.value = str(int_value)
+                    except (TypeError, ValueError):
+                        pass
+                    is_number_of_times_seen_already_present = True
+                elif o.object_type == ObjectTypes.TIME_FIRST_SEEN:
+                    is_time_first_seen_already_present = True
+                elif o.object_type == ObjectTypes.TIME_LAST_SEEN:
+                    # Update last time seen to current time
+                    time_now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+                    o.value = time_now
+                    is_time_last_seen_already_present = True
             if ip_object.status != Status.ANALYZED and as_number:
                 # Remove old AS Number object(s)
                 for asn_value in asn_values:
                     ip_object.remove_object(ObjectTypes.AS_NUMBER, asn_value)
-
                 # Add new AS Number object
                 ip_object.add_object(ObjectTypes.AS_NUMBER, as_number, s.name, '', '', analyst)
 
-            # Other new fields
+            # Initialize number of times seen, first time seen, and last time seen if they are not present.
+            if not is_number_of_times_seen_already_present:
+                ip_object.add_object(ObjectTypes.NUMBER_OF_TIMES_SEEN, '1', s.name, '', '', analyst)
+            if not time_now:
+                time_now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+            if not is_time_first_seen_already_present:
+                ip_object.add_object(ObjectTypes.TIME_FIRST_SEEN, time_now, s.name, '', '', analyst)
+            if not is_time_last_seen_already_present:
+                ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, time_now, s.name, '', '', analyst)
+
+            # Add other new fields
             if extra:
                 ip_object.add_object(ObjectTypes.EXTRA, extra, s.name, '', '', analyst)
             if attack_type:
@@ -505,12 +520,6 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                 ip_object.add_object(ObjectTypes.SOURCE_PORT, str(source_port), s.name, '', '', analyst)
             if dest_port:
                 ip_object.add_object(ObjectTypes.DEST_PORT, str(dest_port), s.name, '', '', analyst)
-            if (is_item_new):
-                # Initialize number of times seen, first time seen, and last time seen
-                ip_object.add_object(ObjectTypes.NUMBER_OF_TIMES_SEEN, '1', s.name, '', '', analyst)
-                time_now = str(datetime.now())
-                ip_object.add_object(ObjectTypes.TIME_FIRST_SEEN, time_now, s.name, '', '', analyst)
-                ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, time_now, s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 
