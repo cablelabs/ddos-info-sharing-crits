@@ -192,9 +192,10 @@ def run_service(name, type_, id_, user, obj=None,
     # Give the service a chance to check for required fields.
     try:
         service_class.valid_for(local_obj.obj)
-        if hasattr(local_obj.obj, 'filedata') and local_obj.obj.filedata:
-            # Reset back to the start so the service gets the full file.
-            local_obj.obj.filedata.seek(0)
+        if hasattr(local_obj.obj, 'filedata'):
+            if local_obj.obj.filedata.grid_id:
+                # Reset back to the start so the service gets the full file.
+                local_obj.obj.filedata.seek(0)
     except ServiceConfigError as e:
         result['html'] = str(e)
         return result
@@ -295,7 +296,8 @@ def run_triage(obj, user):
                         obj.id,
                         user,
                         obj=obj,
-                        execute=settings.SERVICE_MODEL)
+                        execute=settings.SERVICE_MODEL,
+                        custom_config={})
         except:
             pass
     return
@@ -657,7 +659,7 @@ def get_supported_services(crits_type):
     """
 
     services = CRITsService.objects(enabled=True)
-    for s in services:
+    for s in sorted(services, key=lambda s: s.name.lower()):
         if s.supported_types == 'all' or crits_type in s.supported_types:
             yield s.name
 
@@ -720,7 +722,20 @@ def update_analysis_results(task):
         new_dict = {}
         for k in tdict.iterkeys():
             new_dict['set__%s' % k] = tdict[k]
-        AnalysisResult.objects(id=ar.id).update_one(**new_dict)
+        try:
+            AnalysisResult.objects(id=ar.id).update_one(**new_dict)
+        except Exception as e: # assume bad data in 'results'
+            task.status = 'error'
+            new_dict['set__results'] = []
+            le = EmbeddedAnalysisResultLog()
+            le.message = 'DB Update Failed: %s' % e
+            le.level = 'error'
+            le.datetime = str(datetime.datetime.now())
+            new_dict['set__log'].append(le)
+            try:
+                AnalysisResult.objects(id=ar.id).update_one(**new_dict)
+            except: # don't know what's wrong, try writing basic log only
+                AnalysisResult.objects(id=ar.id).update_one(set__log=[le])
 
 def service_remove(service_name, username):
 

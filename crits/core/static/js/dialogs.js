@@ -691,6 +691,11 @@ function addEditSubmit(e) {
     }
     var form = dialog.find("form");
 
+    var sel = form.find('#id_action_type');
+    if (typeof sel !== "undefined") {
+        sel.attr('disabled', false);
+    }
+
     var type = form.attr('item-type');
     if (!type)
     log("Form (" + form.attr('id') + ") should have a defined item-type");
@@ -917,6 +922,7 @@ function update_dialog(e) {
                         sel.append($('<option></option>').val(y).html(y));
                     });
                     sel.find('option[value="' + sel_val + '"]').attr('selected', true);
+                    sel.attr('disabled', true);
                 }
             });
         }
@@ -1474,6 +1480,7 @@ var stdDialogs = {
 		       new: {open: function(e) {
                     $('#id_action_performed_date').val(timenow());
                     var sel = $('#form-add-action').find('#id_action_type');
+                    sel.children().remove();
                     if (typeof subscription_type !== "undefined") {
                         $.ajax({
                             type:'GET',

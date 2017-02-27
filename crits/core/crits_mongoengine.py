@@ -143,7 +143,7 @@ class CritsQuerySet(QS):
         csvout += "".join(obj.to_csv(fields) for obj in self)
         return csvout
 
-    def to_json(self, exclude=None):
+    def to_json(self, exclude=[]):
         """
         Converts a CritsQuerySet to JSON.
 
@@ -166,7 +166,7 @@ class CritsQuerySet(QS):
 
         return [self._document.from_yaml(doc) for doc in yaml_data]
 
-    def to_yaml(self, exclude=None):
+    def to_yaml(self, exclude=[]):
         """
         Converts a CritsQuerySet to a list of YAML docs.
 
@@ -302,6 +302,7 @@ class CritsDocument(BaseDocument):
     meta = {
         'duplicate_attrs':[],
         'migrated': False,
+        'migrating': False,
         'needs_migration': False,
         'queryset_class': CritsQuerySet
     }
@@ -321,6 +322,7 @@ class CritsDocument(BaseDocument):
             #.delete() is normally defined on a Document, not BaseDocument, so
             #   we'll have to monkey patch to call our delete.
             self.delete = self._custom_delete
+        self._meta['strict'] = False
         super(CritsDocument, self).__init__(**values)
 
     def _custom_save(self, force_insert=False, validate=True, clean=False,
@@ -452,17 +454,24 @@ class CritsDocument(BaseDocument):
 
         # perform migration, if needed
         if hasattr(doc, '_meta'):
-            doc._meta['migrated'] = False
-            if doc._meta.get('needs_migration', False):
-                doc.migrate()
-                doc._meta['migrated'] = True
             if ('schema_version' in doc and
                 'latest_schema_version' in doc._meta and
                 doc.schema_version < doc._meta['latest_schema_version']):
                 # mark for migration
                 doc._meta['needs_migration'] = True
                 # reload doc to get full document from database
+            if (doc._meta.get('needs_migration', False) and
+                not doc._meta.get('migrating', False)):
+                doc._meta['migrating'] = True
                 doc.reload()
+                try:
+                    doc.migrate()
+                    doc._meta['migrated'] = True
+                    doc._meta['needs_migration'] = False
+                    doc._meta['migrating'] = False
+                except Exception as e:
+                    e.tlo = doc.id
+                    raise e
 
         return doc
 
@@ -576,7 +585,7 @@ class CritsDocument(BaseDocument):
             return result
         return data
 
-    def _json_yaml_convert(self, exclude=None):
+    def _json_yaml_convert(self, exclude=[]):
         """
         Helper to convert to a dict before converting to JSON.
 
@@ -602,7 +611,7 @@ class CritsDocument(BaseDocument):
 
         return cls._from_son(json_util.loads(json_data))
 
-    def to_json(self, exclude=None):
+    def to_json(self, exclude=[]):
         """
         Convert to JSON.
 
@@ -624,7 +633,7 @@ class CritsDocument(BaseDocument):
 
         return cls._from_son(yaml.load(yaml_data))
 
-    def to_yaml(self, exclude=None):
+    def to_yaml(self, exclude=[]):
         """
         Convert to JSON.
 
@@ -734,18 +743,20 @@ class CritsActionsDocument(BaseDocument):
             ea.date = date
         self.actions.append(ea)
 
-    def delete_action(self, date=None):
+    def delete_action(self, date=None, action=None):
         """
         Delete an action.
 
         :param date: The date of the action to delete.
         :type date: datetime.datetime
+        :param action: The action to delete.
+        :type action: str
         """
 
-        if not date:
+        if not date or not action:
             return
         for t in self.actions:
-            if t.date == date:
+            if t.date == date and t.action_type == action:
                 self.actions.remove(t)
                 break
 
@@ -775,7 +786,7 @@ class CritsActionsDocument(BaseDocument):
         if not date:
             return
         for t in self.actions:
-            if t.date == date:
+            if t.date == date and t.action_type == type_:
                 self.actions.remove(t)
                 ea = EmbeddedAction()
                 ea.action_type = type_
@@ -1796,7 +1807,10 @@ class CritsBaseAttributes(CritsDocument, CritsBaseDocument,
                 their_rel.relationship_date = my_existing_rel.relationship_date
                 their_rel.rel_confidence = my_existing_rel.rel_confidence
                 their_rel.rel_reason = my_existing_rel.rel_reason
-            rel_item.update(add_to_set__relationships=their_rel) # add new rel
+            rel_item.relationships.append(their_rel) # add to passed rel_item
+
+            # updating DB this way can be much faster than saving entire TLO
+            rel_item.update(add_to_set__relationships=their_rel)
 
         if get_rels:
             results = {'success': True,
@@ -1921,7 +1935,8 @@ class CritsBaseAttributes(CritsDocument, CritsBaseDocument,
                         elif modification == "reason":
                             self.relationships[c].rel_reason = new_reason
                         elif modification == "delete":
-                            del self.relationships[c]
+                            self.relationships.remove(r)
+                            break
                 else:
                     if (r.object_id == rel_item.id
                         and r.relationship == rel_type
@@ -1935,7 +1950,8 @@ class CritsBaseAttributes(CritsDocument, CritsBaseDocument,
                         elif modification == "reason":
                             self.relationships[c].rel_reason = new_reason
                         elif modification == "delete":
-                            del self.relationships[c]
+                            self.relationships.remove(r)
+                            break
             for c, r in enumerate(rel_item.relationships):
                 if rel_date:
                     if (r.object_id == self.id
@@ -1951,7 +1967,8 @@ class CritsBaseAttributes(CritsDocument, CritsBaseDocument,
                         elif modification == "reason":
                             rel_item.relationships[c].rel_reason = new_reason
                         elif modification == "delete":
-                            del rel_item.relationships[c]
+                            rel_item.relationships.remove(r)
+                            break
                 else:
                     if (r.object_id == self.id
                         and r.relationship == rev_type
@@ -1965,7 +1982,8 @@ class CritsBaseAttributes(CritsDocument, CritsBaseDocument,
                         elif modification == "reason":
                             rel_item.relationships[c].rel_reason = new_reason
                         elif modification == "delete":
-                            del rel_item.relationships[c]
+                            rel_item.relationships.remove(r)
+                            break
             if not got_rel:
                 rel_item.save(username=analyst)
             if modification == "delete":
@@ -2170,7 +2188,7 @@ class CritsBaseAttributes(CritsDocument, CritsBaseDocument,
             'Email': ('id', 'from_address', 'sender', 'subject', 'campaign'),
             'Event': ('id', 'title', 'event_type', 'description', 'campaign'),
             'Exploit': ('id', 'name', 'cve', 'campaign'),
-            'Indicator': ('id', 'ind_type', 'value', 'campaign'),
+            'Indicator': ('id', 'ind_type', 'value', 'campaign', 'actions'),
             'IP': ('id', 'ip', 'campaign'),
             'PCAP': ('id', 'md5', 'filename', 'description', 'campaign'),
             'RawData': ('id', 'title', 'data_type', 'tool', 'description',

@@ -277,6 +277,7 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
     related_id = data.get('related_id')
     related_type = data.get('related_type')
     relationship_type = data.get('relationship_type')
+    description = data.get('description')
 
     # New fields
     extra = data.get('extra')
@@ -308,6 +309,7 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
                            related_id=related_id,
                            related_type=related_type,
                            relationship_type=relationship_type,
+                           description=description,
                            extra=extra,
                            as_number=as_number,
                            attack_type=attack_type,
@@ -367,6 +369,7 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                   analyst=None, is_add_indicator=False, indicator_reference='',
                   bucket_list=None, ticket=None, is_validate_only=False, cache={},
                   related_id=None, related_type=None, relationship_type=None,
+                  description='',
                   extra='', as_number='', attack_type='', city='', country='',
                   first_seen='', last_seen='', number_of_times=None, state='',
                   total_bps=None, total_pps=None, source_port=None, dest_port=None):
@@ -408,6 +411,8 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
     :type related_type: str
     :param relationship_type: Type of relationship to create.
     :type relationship_type: str
+    :param description: A description for this IP
+    :type description: str
     :returns: dict with keys:
               "success" (boolean),
               "message" (str),
@@ -440,6 +445,11 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
 
         if cached_results != None:
             cached_results[ip_address] = ip_object
+
+    if not ip_object.description:
+        ip_object.description = description or ''
+    elif ip_object.description != description:
+        ip_object.description += "\n" + (description or '')
 
     if isinstance(source, basestring):
         source = [create_embedded_source(source,
@@ -569,8 +579,8 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                              IndicatorThreatTypes.UNKNOWN,
                              IndicatorAttackTypes.UNKNOWN,
                              analyst,
-                             source_method,
-                             indicator_reference,
+                             method=source_method,
+                             reference=indicator_reference,
                              add_domain=False,
                              add_relationship=True,
                              bucket_list=bucket_list,

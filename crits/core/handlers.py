@@ -108,13 +108,13 @@ def action_add(type_, id_, tlo_action, user=None, **kwargs):
                        tlo_action['end_date'],
                        tlo_action['performed_date'],
                        tlo_action['reason'],
-                       tlo_action['date'])
+                       date = datetime.datetime.now())
         obj.save(username=user)
         return {'success': True, 'object': tlo_action}
     except (ValidationError, TypeError, KeyError), e:
         return {'success': False, 'message': e}
 
-def action_remove(type_, id_, date, user, **kwargs):
+def action_remove(type_, id_, date, action, user, **kwargs):
     """
     Remove an action from a TLO.
 
@@ -124,6 +124,8 @@ def action_remove(type_, id_, date, user, **kwargs):
     :type id_: str
     :param date: The date of the action to remove.
     :type date: datetime.datetime
+    :param action: The name of the action to remove.
+    :type action: str
     :param analyst: The user removing the action.
     :type analyst: str
     :returns: dict with keys "success" (boolean) and "message" (str) if failed.
@@ -143,7 +145,7 @@ def action_remove(type_, id_, date, user, **kwargs):
                 'message': 'Could not find TLO'}
     try:
         date = datetime_parser(date)
-        obj.delete_action(date)
+        obj.delete_action(date, action)
         obj.save(username=user)
         return {'success': True}
     except (ValidationError, TypeError), e:
@@ -1187,15 +1189,13 @@ def download_object_handler(total_limit, depth_limit, rel_limit, rst_fmt,
         "mimetype" (str)
     """
 
-    result = {'success': False}
-
     json_docs = []
     to_zip = []
     need_filedata = rst_fmt != 'json_no_bin'
     if not need_filedata:
         bin_fmt = None
 
-    # If bin_fmt is not zlib or base64, force it to base64.
+    # If rst_fmt is json & bin_fmt is not zlib or base64, force it to base64.
     if rst_fmt == 'json' and bin_fmt not in ['zlib', 'base64']:
         bin_fmt = 'base64'
 
@@ -1223,26 +1223,29 @@ def download_object_handler(total_limit, depth_limit, rel_limit, rst_fmt,
                     obj.filedata.seek(0)
             else:
                 try:
-                    json_docs.append(obj.to_json())
+                    exclude = [] if need_filedata else ['filedata']
+                    json_docs.append((oid, otype, obj.to_json(exclude)))
                 except:
                     pass
 
-    zip_count = len(to_zip)
-    if zip_count <= 0:
-        result['success'] = True
-        result['data'] = json_docs
-        result['filename'] = "crits.json"
-        result['mimetype'] = 'text/json'
+    stamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    if len(objs) == 1:
+        fname = "CRITs_%s_%s_%s" % (obj_type, obj_id, stamp)
     else:
-        zip_data = to_zip
+        fname = "CRITs_%s" % stamp
+    if rst_fmt != 'zip': # JSON File
+        return {'success': True,
+                'data': "[%s]" % ",".join(doc[2] for doc in json_docs),
+                'filename': "%s.json" % fname,
+                'mimetype': 'text/json'}
+    else: # ZIP File
         for doc in json_docs:
-            inner_filename = "%s.xml" % doc['id']
-            zip_data.append((inner_filename, doc))
-        result['success'] = True
-        result['data'] = create_zip(zip_data, True)
-        result['filename'] = "CRITS_%s.zip" % datetime.datetime.today().strftime("%Y-%m-%d")
-        result['mimetype'] = 'application/zip'
-    return result
+            inner_filename = "%s-%s.json" % (doc[1], doc[0])
+            to_zip.append((inner_filename, doc[2]))
+        return {'success': True,
+                'data': create_zip(to_zip, True),
+                'filename': "%s.zip" % fname,
+                'mimetype': 'application/zip'}
 
 def collect_objects(obj_type, obj_id, depth_limit, total_limit, rel_limit,
                     object_types, sources, need_filedata=True, depth=0):
@@ -1720,6 +1723,7 @@ def gen_global_query(obj,user,term,search_type="global",force_full=False):
         'sha1hash': {'sha1': search_query},
         'ssdeephash': {'ssdeep': search_query},
         'sha256hash': {'sha256': search_query},
+        'impfuzzyhash': {'impfuzzy': search_query},
         # slow in larger collections
         'filename': {'$or': [
             {'filename': search_query},
@@ -1729,6 +1733,7 @@ def gen_global_query(obj,user,term,search_type="global",force_full=False):
         # slightly slow in larger collections
         'object_value': {'objects.value': search_query},
         'bucket_list': {'bucket_list': search_query},
+        'ticket': {'tickets.ticket_number': search_query},
         'sectors': {'sectors': search_query},
         'source': {'source.name': search_query},
     }
@@ -2028,8 +2033,13 @@ def data_query(col_obj, user, limit=25, skip=0, sort=[], query={},
                                               order_by(*sort).skip(skip).\
                                               limit(limit).only(*projection)
             else:
-                docs = col_obj.objects(__raw__=query).order_by(*sort).\
+                if projection:
+                    docs = col_obj.objects(__raw__=query).order_by(*sort).\
                                     skip(skip).limit(limit).only(*projection)
+                else:
+                    # Hack to fix AuditLog
+                    docs = col_obj.objects(__raw__=query).order_by(*sort).\
+                                    skip(skip).limit(limit)
         # Else, all other objects that have sources associated with them
         # need to be filtered appropriately
         else:
@@ -2038,9 +2048,14 @@ def data_query(col_obj, user, limit=25, skip=0, sort=[], query={},
             if count:
                 results['result'] = "OK"
                 return results
-            docs = col_obj.objects(source__name__in=sourcefilt,__raw__=query).\
+            if projection:
+                docs = col_obj.objects(source__name__in=sourcefilt,__raw__=query).\
                                     order_by(*sort).skip(skip).limit(limit).\
                                     only(*projection)
+            else:
+                # Hack to fix Dashboard
+                docs = col_obj.objects(source__name__in=sourcefilt,__raw__=query).\
+                                    order_by(*sort).skip(skip).limit(limit)
         for doc in docs:
             if hasattr(doc, "sanitize_sources"):
                 doc.sanitize_sources(username="%s" % user, sources=sourcefilt)
@@ -3455,8 +3470,12 @@ def user_login(request, user):
             request.session.flush()
     else:
         request.session.cycle_key()
-    #request.session[SESSION_KEY] = user._meta.pk.value_to_string(user)
-    request.session[SESSION_KEY] = user.pk
+    try:
+        # try the new way
+        request.session[SESSION_KEY] = user._meta.pk.value_to_string(user)
+    except Exception:
+        #if it doesn't work, do what Django 1.7 does
+        request.session[SESSION_KEY] = user.pk
     request.session[BACKEND_SESSION_KEY] = user.backend
     request.session[HASH_SESSION_KEY] = session_auth_hash
     if hasattr(request, 'user'):
