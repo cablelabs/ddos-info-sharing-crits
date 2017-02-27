@@ -59,7 +59,7 @@ urlpatterns = [
     url(r'^details/(?P<type_>\S+)/(?P<id_>\S+)/$', 'crits.core.views.details'),
     url(r'^update_object_description/', 'crits.core.views.update_object_description'),
     url(r'^update_object_data/', 'crits.core.views.update_object_data'),
-    url(r'^update_object_misc/', 'crits.core.views.updtae_object_misc'),
+    url(r'^update_object_misc/', 'crits.core.views.update_object_misc'),
 
     # Helper pages
     url(r'^about/$', 'crits.core.views.about'),
