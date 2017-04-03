@@ -280,17 +280,17 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
     description = data.get('description')
 
     # New fields
-    extra = data.get('extra')
-    as_number = data.get('as_number')
-    attack_type = data.get('attack_type')
-    city = data.get('city')
-    country = data.get('country')
-    first_seen = data.get('first_seen')
-    last_seen = data.get('last_seen')
-    number_of_times = data.get('number_of_times')
-    state = data.get('state')
-    total_bps = data.get('total_bps')
-    total_pps = data.get('total_pps')
+    # extra = data.get('extra')
+    # as_number = data.get('as_number')
+    # attack_type = data.get('attack_type')
+    # city = data.get('city')
+    # country = data.get('country')
+    # first_seen = data.get('first_seen')
+    # last_seen = data.get('last_seen')
+    # number_of_times = data.get('number_of_times')
+    # state = data.get('state')
+    # total_bps = data.get('total_bps')
+    # total_pps = data.get('total_pps')
 
     retVal = ip_add_update(ip,
                            ip_type,
@@ -310,17 +310,18 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
                            related_type=related_type,
                            relationship_type=relationship_type,
                            description=description,
-                           extra=extra,
-                           as_number=as_number,
-                           attack_type=attack_type,
-                           city=city,
-                           country=country,
-                           first_seen=first_seen,
-                           last_seen=last_seen,
-                           number_of_times=number_of_times,
-                           state=state,
-                           total_bps=total_bps,
-                           total_pps=total_pps)
+                           # extra=extra,
+                           # as_number=as_number,
+                           # attack_type=attack_type,
+                           # city=city,
+                           # country=country,
+                           # first_seen=first_seen,
+                           # last_seen=last_seen,
+                           # number_of_times=number_of_times,
+                           # state=state,
+                           # total_bps=total_bps,
+                           # total_pps=total_pps
+                           )
 
     if not retVal['success']:
         errors.append(retVal.get('message'))
@@ -369,10 +370,7 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                   analyst=None, is_add_indicator=False, indicator_reference='',
                   bucket_list=None, ticket=None, is_validate_only=False, cache={},
                   related_id=None, related_type=None, relationship_type=None,
-                  description='',
-                  extra='', as_number='', attack_type='', city='', country='',
-                  first_seen='', last_seen='', number_of_times=None, state='',
-                  total_bps=None, total_pps=None, source_port=None, dest_port=None):
+                  description='', additional_fields={}):
     """
     Add/update an IP address.
 
@@ -413,6 +411,8 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
     :type relationship_type: str
     :param description: A description for this IP
     :type description: str
+    :param additional_fields: Dictionary of additional fields to add to this IP.
+    :type additional_fields: dict
     :returns: dict with keys:
               "success" (boolean),
               "message" (str),
@@ -469,11 +469,11 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
         # NOTE: There should only be one source.
         for s in source:
             ip_object.add_source(s)
-            # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove.
+            # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove later.
             asn_values = []
-            is_number_of_times_seen_already_present = False
-            is_time_first_seen_already_present = False
-            is_time_last_seen_already_present = False
+            is_number_of_times_seen_present = False
+            is_time_first_seen_present = False
+            is_time_last_seen_present = False
             time_now = ''
             for o in ip_object.obj:
                 if o.object_type == ObjectTypes.AS_NUMBER:
@@ -486,50 +486,63 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
                         o.value = str(int_value)
                     except (TypeError, ValueError):
                         pass
-                    is_number_of_times_seen_already_present = True
+                    is_number_of_times_seen_present = True
                 elif o.object_type == ObjectTypes.TIME_FIRST_SEEN:
-                    is_time_first_seen_already_present = True
+                    is_time_first_seen_present = True
                 elif o.object_type == ObjectTypes.TIME_LAST_SEEN:
                     # Update last time seen to current time
                     time_now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
                     o.value = time_now
-                    is_time_last_seen_already_present = True
-            if ip_object.status != Status.ANALYZED and as_number:
+                    is_time_last_seen_present = True
+            if ip_object.status != Status.ANALYZED and ObjectTypes.AS_NUMBER in additional_fields:
                 # Remove old AS Number object(s)
                 for asn_value in asn_values:
                     ip_object.remove_object(ObjectTypes.AS_NUMBER, asn_value)
+                as_number = additional_fields[ObjectTypes.AS_NUMBER]
                 # Add new AS Number object
                 ip_object.add_object(ObjectTypes.AS_NUMBER, as_number, s.name, '', '', analyst)
 
             # Initialize number of times seen, first time seen, and last time seen if they are not present.
-            if not is_number_of_times_seen_already_present:
+            if not is_number_of_times_seen_present:
                 ip_object.add_object(ObjectTypes.NUMBER_OF_TIMES_SEEN, '1', s.name, '', '', analyst)
             if not time_now:
                 time_now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-            if not is_time_first_seen_already_present:
+            if not is_time_first_seen_present:
                 ip_object.add_object(ObjectTypes.TIME_FIRST_SEEN, time_now, s.name, '', '', analyst)
-            if not is_time_last_seen_already_present:
+            if not is_time_last_seen_present:
                 ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, time_now, s.name, '', '', analyst)
 
             # Add other new fields
-            if extra:
-                ip_object.add_object(ObjectTypes.EXTRA, extra, s.name, '', '', analyst)
-            if attack_type:
-                ip_object.add_object(ObjectTypes.ATTACK_TYPE, attack_type, s.name, '', '', analyst)
-            if city:
-                ip_object.add_object(ObjectTypes.CITY, city, s.name, '', '', analyst)
-            if country:
-                ip_object.add_object(ObjectTypes.COUNTRY, country, s.name, '', '', analyst)
-            if state:
-                ip_object.add_object(ObjectTypes.STATE, state, s.name, '', '', analyst)
-            if total_bps:
-                ip_object.add_object(ObjectTypes.TOTAL_BYTES_PER_SECOND, str(total_bps), s.name, '', '', analyst)
-            if total_pps:
-                ip_object.add_object(ObjectTypes.TOTAL_PACKETS_PER_SECOND, str(total_pps), s.name, '', '', analyst)
-            if source_port:
-                ip_object.add_object(ObjectTypes.SOURCE_PORT, str(source_port), s.name, '', '', analyst)
-            if dest_port:
-                ip_object.add_object(ObjectTypes.DEST_PORT, str(dest_port), s.name, '', '', analyst)
+            # if hasattr(ObjectTypes, field): do stuff
+
+            already_set_fields = [
+                ObjectTypes.AS_NUMBER,
+                ObjectTypes.NUMBER_OF_TIMES_SEEN,
+                ObjectTypes.TIME_FIRST_SEEN,
+                ObjectTypes.TIME_LAST_SEEN
+            ]
+            for field, value in additional_fields.items():
+                if field not in already_set_fields and hasattr(ObjectTypes, field):
+                    ip_object.add_object(field, value, s.name, '', '', analyst)
+
+            # if extra:
+            #     ip_object.add_object(ObjectTypes.EXTRA, extra, s.name, '', '', analyst)
+            # if attack_type:
+            #     ip_object.add_object(ObjectTypes.ATTACK_TYPE, attack_type, s.name, '', '', analyst)
+            # if city:
+            #     ip_object.add_object(ObjectTypes.CITY, city, s.name, '', '', analyst)
+            # if country:
+            #     ip_object.add_object(ObjectTypes.COUNTRY, country, s.name, '', '', analyst)
+            # if state:
+            #     ip_object.add_object(ObjectTypes.STATE, state, s.name, '', '', analyst)
+            # if total_bps:
+            #     ip_object.add_object(ObjectTypes.TOTAL_BYTES_PER_SECOND, str(total_bps), s.name, '', '', analyst)
+            # if total_pps:
+            #     ip_object.add_object(ObjectTypes.TOTAL_PACKETS_PER_SECOND, str(total_pps), s.name, '', '', analyst)
+            # if source_port:
+            #     ip_object.add_object(ObjectTypes.SOURCE_PORT, str(source_port), s.name, '', '', analyst)
+            # if dest_port:
+            #     ip_object.add_object(ObjectTypes.DEST_PORT, str(dest_port), s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 

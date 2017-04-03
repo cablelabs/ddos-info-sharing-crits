@@ -62,17 +62,17 @@ class IPResource(CRITsAPIResource):
         ticket = data.get('ticket', None)
 
         # New fields
-        extra = data.get('extra', None)
-        as_number = data.get('as_number', None)
-        attack_type = data.get('attack_type', None)
-        city = data.get('city', None)
-        country = data.get('country', None)
-        first_seen = data.get('first_seen', None)
-        last_seen = data.get('last_seen', None)
-        number_of_times = data.get('number_of_times', None)
-        state = data.get('state', None)
-        total_bps = data.get('total_bps', None)
-        total_pps = data.get('total_pps', None)
+        # extra = data.get('extra', None)
+        # as_number = data.get('as_number', None)
+        # attack_type = data.get('attack_type', None)
+        # city = data.get('city', None)
+        # country = data.get('country', None)
+        # first_seen = data.get('first_seen', None)
+        # last_seen = data.get('last_seen', None)
+        # number_of_times = data.get('number_of_times', None)
+        # state = data.get('state', None)
+        # total_bps = data.get('total_bps', None)
+        # total_pps = data.get('total_pps', None)
 
         content = {'return_code': 1,
                    'type': 'IP'}
@@ -94,17 +94,18 @@ class IPResource(CRITsAPIResource):
                                ticket=ticket,
                                is_add_indicator=add_indicator,
                                indicator_reference=indicator_reference,
-                               extra=extra,
-                               as_number=as_number,
-                               attack_type=attack_type,
-                               city=city,
-                               country=country,
-                               first_seen=first_seen,
-                               last_seen=last_seen,
-                               number_of_times=number_of_times,
-                               state=state,
-                               total_bps=total_bps,
-                               total_pps=total_pps)
+                               # extra=extra,
+                               # as_number=as_number,
+                               # attack_type=attack_type,
+                               # city=city,
+                               # country=country,
+                               # first_seen=first_seen,
+                               # last_seen=last_seen,
+                               # number_of_times=number_of_times,
+                               # state=state,
+                               # total_bps=total_bps,
+                               # total_pps=total_pps
+                               )
 
         if result.get('message'):
             content['message'] = result.get('message')
