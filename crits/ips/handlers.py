@@ -279,19 +279,6 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
     relationship_type = data.get('relationship_type')
     description = data.get('description')
 
-    # New fields
-    # extra = data.get('extra')
-    # as_number = data.get('as_number')
-    # attack_type = data.get('attack_type')
-    # city = data.get('city')
-    # country = data.get('country')
-    # first_seen = data.get('first_seen')
-    # last_seen = data.get('last_seen')
-    # number_of_times = data.get('number_of_times')
-    # state = data.get('state')
-    # total_bps = data.get('total_bps')
-    # total_pps = data.get('total_pps')
-
     retVal = ip_add_update(ip,
                            ip_type,
                            source=source,
@@ -309,19 +296,7 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
                            related_id=related_id,
                            related_type=related_type,
                            relationship_type=relationship_type,
-                           description=description,
-                           # extra=extra,
-                           # as_number=as_number,
-                           # attack_type=attack_type,
-                           # city=city,
-                           # country=country,
-                           # first_seen=first_seen,
-                           # last_seen=last_seen,
-                           # number_of_times=number_of_times,
-                           # state=state,
-                           # total_bps=total_bps,
-                           # total_pps=total_pps
-                           )
+                           description=description)
 
     if not retVal['success']:
         errors.append(retVal.get('message'))
@@ -512,37 +487,17 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
             if not is_time_last_seen_present:
                 ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, time_now, s.name, '', '', analyst)
 
-            # Add other new fields
-            # if hasattr(ObjectTypes, field): do stuff
-
             already_set_fields = [
                 ObjectTypes.AS_NUMBER,
                 ObjectTypes.NUMBER_OF_TIMES_SEEN,
                 ObjectTypes.TIME_FIRST_SEEN,
                 ObjectTypes.TIME_LAST_SEEN
             ]
+            # Add additional fields from input dictionary.
             for field, value in additional_fields.items():
-                if field not in already_set_fields and hasattr(ObjectTypes, field):
-                    ip_object.add_object(field, value, s.name, '', '', analyst)
-
-            # if extra:
-            #     ip_object.add_object(ObjectTypes.EXTRA, extra, s.name, '', '', analyst)
-            # if attack_type:
-            #     ip_object.add_object(ObjectTypes.ATTACK_TYPE, attack_type, s.name, '', '', analyst)
-            # if city:
-            #     ip_object.add_object(ObjectTypes.CITY, city, s.name, '', '', analyst)
-            # if country:
-            #     ip_object.add_object(ObjectTypes.COUNTRY, country, s.name, '', '', analyst)
-            # if state:
-            #     ip_object.add_object(ObjectTypes.STATE, state, s.name, '', '', analyst)
-            # if total_bps:
-            #     ip_object.add_object(ObjectTypes.TOTAL_BYTES_PER_SECOND, str(total_bps), s.name, '', '', analyst)
-            # if total_pps:
-            #     ip_object.add_object(ObjectTypes.TOTAL_PACKETS_PER_SECOND, str(total_pps), s.name, '', '', analyst)
-            # if source_port:
-            #     ip_object.add_object(ObjectTypes.SOURCE_PORT, str(source_port), s.name, '', '', analyst)
-            # if dest_port:
-            #     ip_object.add_object(ObjectTypes.DEST_PORT, str(dest_port), s.name, '', '', analyst)
+                # TODO: how would I check that field is one of the fields in ObjectTypes?
+                if field not in already_set_fields:
+                    ip_object.add_object(field, str(value), s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 
