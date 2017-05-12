@@ -141,19 +141,6 @@ def add_update_ip(request, method):
             related_type = cleaned_data['related_type']
             relationship_type = cleaned_data['relationship_type']
 
-            # New fields
-            # extra = cleaned_data['extra']
-            # as_number = cleaned_data['as_number']
-            # attack_type = cleaned_data['attack_type']
-            # city = cleaned_data['city']
-            # country = cleaned_data['country']
-            # first_seen = cleaned_data['first_seen']
-            # last_seen = cleaned_data['last_seen']
-            # number_of_times = cleaned_data['number_of_times']
-            # state = cleaned_data['state']
-            # total_bps = cleaned_data['total_bps']
-            # total_pps = cleaned_data['total_pps']
-
             result = ip_add_update(ip,
                                    ip_type,
                                    source=name,
@@ -168,19 +155,7 @@ def add_update_ip(request, method):
                                    indicator_reference=indicator_reference,
                                    related_id=related_id,
                                    related_type=related_type,
-                                   relationship_type=relationship_type,
-                                   # extra=extra,
-                                   # as_number=as_number,
-                                   # attack_type=attack_type,
-                                   # city=city,
-                                   # country=country,
-                                   # first_seen=first_seen,
-                                   # last_seen=last_seen,
-                                   # number_of_times=number_of_times,
-                                   # state=state,
-                                   # total_bps=total_bps,
-                                   # total_pps=total_pps
-                                   )
+                                   relationship_type=relationship_type)
             if 'message' in result:
                 if not isinstance(result['message'], list):
                     result['message'] = [result['message']]

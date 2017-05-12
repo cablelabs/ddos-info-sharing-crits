@@ -8,7 +8,6 @@ from crits.core.user_tools import get_user_organization
 from crits.core import form_consts
 
 from crits.vocabulary.ips import IPTypes
-from crits.vocabulary.objects import ObjectTypes
 from crits.vocabulary.relationships import RelationshipTypes
 
 relationship_choices = [(c, c) for c in RelationshipTypes.values(sort=True)]
@@ -38,19 +37,6 @@ class AddIPForm(forms.Form):
     relationship_type = forms.ChoiceField(required=False,
                                           label=form_consts.Common.RELATIONSHIP_TYPE,
                                           widget=forms.Select(attrs={'id':'relationship_type'}))
-
-    # New fields
-    extra = forms.CharField(required=False, label=ObjectTypes.EXTRA)
-    as_number = forms.CharField(required=False, label=ObjectTypes.AS_NUMBER)
-    attack_type = forms.CharField(required=False, label=ObjectTypes.ATTACK_TYPE)
-    city = forms.CharField(required=False, label=ObjectTypes.CITY)
-    country = forms.CharField(required=False, label=ObjectTypes.COUNTRY)
-    first_seen = forms.CharField(required=False, label=ObjectTypes.TIME_FIRST_SEEN)
-    last_seen = forms.CharField(required=False, label=ObjectTypes.TIME_LAST_SEEN)
-    number_of_times = forms.IntegerField(required=False, label=ObjectTypes.NUMBER_OF_TIMES_SEEN)
-    state = forms.CharField(required=False, label=ObjectTypes.STATE)
-    total_bps = forms.IntegerField(required=False, label=ObjectTypes.TOTAL_BYTES_PER_SECOND)
-    total_pps = forms.IntegerField(required=False, label=ObjectTypes.TOTAL_PACKETS_PER_SECOND)
 
     def __init__(self, username, choices, *args, **kwargs):
         super(AddIPForm, self).__init__(*args, **kwargs)

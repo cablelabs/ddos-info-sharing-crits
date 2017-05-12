@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -30,9 +29,7 @@ from crits.vocabulary.indicators import (
     IndicatorAttackTypes,
     IndicatorThreatTypes
 )
-from crits.vocabulary.objects import ObjectTypes
 from crits.vocabulary.relationships import RelationshipTypes
-from crits.vocabulary.status import Status
 
 
 def generate_ip_csv(request):
@@ -343,9 +340,9 @@ def add_new_ip(data, rowData, request, errors, is_validate_only=False, cache={})
 def ip_add_update(ip_address, ip_type, source=None, source_method='',
                   source_reference='', campaign=None, confidence='low',
                   analyst=None, is_add_indicator=False, indicator_reference='',
-                  bucket_list=None, ticket=None, is_validate_only=False, cache={},
-                  related_id=None, related_type=None, relationship_type=None,
-                  description='', additional_fields={}):
+                  bucket_list=None, ticket=None, is_validate_only=False,
+                  cache={}, related_id=None, related_type=None,
+                  relationship_type=None, description=''):
     """
     Add/update an IP address.
 
@@ -386,8 +383,6 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
     :type relationship_type: str
     :param description: A description for this IP
     :type description: str
-    :param additional_fields: Dictionary of additional fields to add to this IP.
-    :type additional_fields: dict
     :returns: dict with keys:
               "success" (boolean),
               "message" (str),
@@ -441,63 +436,8 @@ def ip_add_update(ip_address, ip_type, source=None, source_method='',
             ip_object.add_campaign(camp)
 
     if source:
-        # NOTE: There should only be one source.
         for s in source:
             ip_object.add_source(s)
-            # To prevent skipping objects in ip_object.obj due to removing objects, store list of ASNs to remove later.
-            asn_values = []
-            is_number_of_times_seen_present = False
-            is_time_first_seen_present = False
-            is_time_last_seen_present = False
-            time_now = ''
-            for o in ip_object.obj:
-                if o.object_type == ObjectTypes.AS_NUMBER:
-                    asn_values.append(o.value)
-                elif o.object_type == ObjectTypes.NUMBER_OF_TIMES_SEEN:
-                    # Increment number of times seen
-                    try:
-                        int_value = int(o.value)
-                        int_value += 1
-                        o.value = str(int_value)
-                    except (TypeError, ValueError):
-                        pass
-                    is_number_of_times_seen_present = True
-                elif o.object_type == ObjectTypes.TIME_FIRST_SEEN:
-                    is_time_first_seen_present = True
-                elif o.object_type == ObjectTypes.TIME_LAST_SEEN:
-                    # Update last time seen to current time
-                    time_now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-                    o.value = time_now
-                    is_time_last_seen_present = True
-            if ip_object.status != Status.ANALYZED and ObjectTypes.AS_NUMBER in additional_fields:
-                # Remove old AS Number object(s)
-                for asn_value in asn_values:
-                    ip_object.remove_object(ObjectTypes.AS_NUMBER, asn_value)
-                as_number = additional_fields[ObjectTypes.AS_NUMBER]
-                # Add new AS Number object
-                ip_object.add_object(ObjectTypes.AS_NUMBER, as_number, s.name, '', '', analyst)
-
-            # Initialize number of times seen, first time seen, and last time seen if they are not present.
-            if not is_number_of_times_seen_present:
-                ip_object.add_object(ObjectTypes.NUMBER_OF_TIMES_SEEN, '1', s.name, '', '', analyst)
-            if not time_now:
-                time_now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-            if not is_time_first_seen_present:
-                ip_object.add_object(ObjectTypes.TIME_FIRST_SEEN, time_now, s.name, '', '', analyst)
-            if not is_time_last_seen_present:
-                ip_object.add_object(ObjectTypes.TIME_LAST_SEEN, time_now, s.name, '', '', analyst)
-
-            already_set_fields = [
-                ObjectTypes.AS_NUMBER,
-                ObjectTypes.NUMBER_OF_TIMES_SEEN,
-                ObjectTypes.TIME_FIRST_SEEN,
-                ObjectTypes.TIME_LAST_SEEN
-            ]
-            # Add additional fields from input dictionary.
-            for field, value in additional_fields.items():
-                # TODO: how would I check that field is one of the fields in ObjectTypes?
-                if field not in already_set_fields:
-                    ip_object.add_object(field, str(value), s.name, '', '', analyst)
     else:
         return {"success" : False, "message" : "Missing source information."}
 
@@ -624,19 +564,6 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
     bucket_list = rowData.get(form_consts.Common.BUCKET_LIST, "")
     ticket = rowData.get(form_consts.Common.TICKET, "")
 
-    # New fields
-    extra = rowData.get(ObjectTypes.EXTRA, "")
-    as_number = rowData.get(ObjectTypes.AS_NUMBER)
-    attack_type = rowData.get(ObjectTypes.ATTACK_TYPE)
-    city = rowData.get(ObjectTypes.CITY)
-    country = rowData.get(ObjectTypes.COUNTRY)
-    first_seen = rowData.get(ObjectTypes.TIME_FIRST_SEEN)
-    last_seen = rowData.get(ObjectTypes.TIME_LAST_SEEN)
-    number_of_times = rowData.get(ObjectTypes.NUMBER_OF_TIMES_SEEN)
-    state = rowData.get(ObjectTypes.STATE)
-    total_bps = rowData.get(ObjectTypes.TOTAL_BYTES_PER_SECOND)
-    total_pps = rowData.get(ObjectTypes.TOTAL_PACKETS_PER_SECOND)
-
     data = {
         'ip': ip,
         'ip_type': ip_type,
@@ -649,19 +576,7 @@ def parse_row_to_bound_ip_form(request, rowData, cache):
         'add_indicator': is_add_indicator,
         'indicator_reference': indicator_reference,
         'bucket_list': bucket_list,
-        'ticket': ticket,
-        'extra': extra,
-        'as_number': as_number,
-        'attack_type': attack_type,
-        'city': city,
-        'country': country,
-        'first_seen': first_seen,
-        'last_seen': last_seen,
-        'number_of_times': number_of_times,
-        'state': state,
-        'total_bps': total_bps,
-        'total_pps': total_pps
-    }
+        'ticket': ticket}
 
     bound_form = cache.get('ip_form')
 
