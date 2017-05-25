@@ -201,15 +201,6 @@ crits_config = coll.find_one({})
 if not crits_config:
     crits_config = {}
 
-#collections = db.collection_names()
-#for collection in ['campaigns', 'ips', 'users']:
-#    print('Collection:'+collection)
-#    documents = db[collection].find()
-#    for document in documents:
-        #print('Document:'+document)
-#        print(document)
-
-
 # Populate settings
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts

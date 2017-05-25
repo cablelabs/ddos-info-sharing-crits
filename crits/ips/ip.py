@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, IntField, FloatField
+from mongoengine import Document, StringField
 from django.conf import settings
 
 from crits.vocabulary.ips import IPTypes

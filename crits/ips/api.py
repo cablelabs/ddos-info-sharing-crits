@@ -61,7 +61,6 @@ class IPResource(CRITsAPIResource):
         bucket_list = data.get('bucket_list', None)
         ticket = data.get('ticket', None)
 
-
         content = {'return_code': 1,
                    'type': 'IP'}
 
