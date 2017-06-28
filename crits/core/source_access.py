@@ -1,4 +1,4 @@
-from mongoengine import Document, IntField, ListField, StringField
+from mongoengine import Document, IntField, SortedListField, StringField
 from django.conf import settings
 
 from crits.core.crits_mongoengine import CritsDocument, CritsSchemaDocument
@@ -25,7 +25,5 @@ class SourceAccess(CritsDocument, CritsSchemaDocument, Document):
     #TODO: this could be a boolean field if we migrate
     active = StringField(default="on")
     sample_count = IntField(default=0)
-    asns = ListField(IntField(default=None))
+    asns = SortedListField(IntField(default=None))
     country_code = StringField(default="")
-    # TODO: Maybe change data structure for 'aliases' to reduce time to check if value is already present.
-    aliases = ListField(StringField(default=""))
