@@ -7,6 +7,8 @@ class ObjectTypes(vocab):
 
 
     ADJUST_TOKEN = "Adjust Token"
+    AGGREGATE_BYTES_PER_SECOND = "Aggregate Bytes per Second"
+    AGGREGATE_PACKETS_PER_SECOND = "Aggregate Packets per Second"
     API_KEY = "API Key"
     AS_NUMBER = "AS Number"
     AS_NAME = "AS Name"
