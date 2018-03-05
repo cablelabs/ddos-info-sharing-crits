@@ -141,6 +141,23 @@ def get_user_organization(user=None):
     else:
         return settings.COMPANY_NAME
 
+def is_admin(username):
+    """
+    Determine if the user is an admin.
+
+    :param username: The user to lookup.
+    :type username: str
+    :returns: True, False
+    """
+
+    from crits.core.user import CRITsUser
+    username = str(username)
+    user = CRITsUser.objects(username=username).first()
+    if user:
+        if user.role == "Administrator":
+            return True
+    return False
+
 def user_can_view_data(user):
     """
     Determine if the user is active and authenticated.

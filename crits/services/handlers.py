@@ -28,7 +28,7 @@ from crits.core.class_mapper import class_from_type, class_from_id
 from crits.core.crits_mongoengine import json_handler
 from crits.core.handlers import build_jtable, csv_export
 from crits.core.handlers import jtable_ajax_list, jtable_ajax_delete
-from crits.core.user_tools import user_sources
+from crits.core.user_tools import user_sources, is_admin
 from crits.services.analysis_result import AnalysisResult, AnalysisConfig
 from crits.services.analysis_result import EmbeddedAnalysisResultLog
 from crits.services.core import ServiceConfigError, AnalysisTask
@@ -746,7 +746,6 @@ def update_analysis_results(task):
                 AnalysisResult.objects(id=ar.id).update_one(set__log=[le])
 
 def service_remove(service_name, username):
-
     if is_admin(username):
         service = CRITsService.objects(name=service_name).first()
         if service:
