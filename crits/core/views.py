@@ -647,7 +647,8 @@ def source_add(request):
         if source_form.is_valid():
             if user.has_access_to(GeneralACL.ADD_NEW_SOURCE):
                 result = add_new_source(source_form.cleaned_data['source'],
-                                        user)
+                                        user,
+                                        asns=source_form.cleaned_data['asns'])
                 if result:
                     msg = ('<div>Source added successfully! Add this source to '
                            'users to utilize it.</div>')
@@ -1194,6 +1195,7 @@ def base_context(request):
         base_context['add_signature_type'] = NewSignatureTypeForm()
         base_context['add_signature_dependency'] = NewSignatureDependencyForm()
         base_context['source_access'] = SourceAccessForm()
+        base_context['add_source_access'] = AddSourceForm()
         base_context['upload_tlds'] = TLDUpdateForm()
         base_context['role_add'] = AddRoleForm()
         base_context['new_ticket'] = TicketForm(initial={'date': datetime.datetime.now()})
